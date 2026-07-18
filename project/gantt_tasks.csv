@@ -1,0 +1,23 @@
+Task Name,Start Date,End Date,Dependency,Assignee,Progress (%)
+Rebrand Workspace Kickoff,2026-07-20,2026-07-24,,PMO,100%
+Submit Trademark Filings,2026-07-20,2026-07-27,,LEGAL,100%
+Lock Brand Guidelines,2026-07-22,2026-07-24,,BRAND,100%
+Deploy CSS Design Tokens,2026-07-27,2026-07-31,Lock Brand Guidelines,ENG,90%
+Integrate Tokens to App Workspace,2026-07-29,2026-08-04,Deploy CSS Design Tokens,ENG,80%
+Configure OpenAPI 3.0 Spec,2026-08-03,2026-08-07,,ENG,100%
+Validate Mock API Gateways,2026-08-06,2026-08-11,Configure OpenAPI 3.0 Spec,ENG,60%
+Develop Landing Page (index.html),2026-08-10,2026-08-14,Deploy CSS Design Tokens,ENG,10%
+Implement Timeline Simulator Script,2026-08-12,2026-08-19,Develop Landing Page,ENG,0%
+Establish Moderation Matrix Rules,2026-08-17,2026-08-21,,MKT/COMMS,100%
+Conduct Employee Onboarding All-Hands,2026-08-24,2026-08-26,Develop Landing Page,PMO,10%
+Publish Staff Transition FAQ,2026-08-26,2026-08-28,Conduct Employee Onboarding,PMO,100%
+Set Up Cloud Production Hosting,2026-08-31,2026-09-04,,ENG,0%
+Secure API Gateway Penetration Test,2026-09-03,2026-09-09,Set Up Cloud Production,ENG,0%
+Freeze Outbound Marketing Materials,2026-09-07,2026-09-11,,MKT/COMMS,0%
+Schedule Press Release Wire,2026-09-10,2026-09-15,Freeze Outbound Marketing,MKT/COMMS,0%
+Run End-to-End QA Performance Bash,2026-09-14,2026-09-18,,ENG,0%
+Open External Private Beta Sandbox,2026-09-21,2026-09-25,Secure API Gateway,ENG,0%
+Incorporate Private Beta Feedback,2026-09-24,2026-10-02,Open External Private Beta,PMO,0%
+Lock System Production Candidate,2026-10-05,2026-10-08,Run End-to-End QA,ENG,0%
+Global Public Launch & Wire Deploy,2026-10-12,2026-10-14,Lock System Production,MKT/COMMS,0%
+Monitor Live Ingress Metrics,2026-10-13,2026-10-16,Global Public Launch,ENG,0%

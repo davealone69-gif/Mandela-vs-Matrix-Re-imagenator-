@@ -1,0 +1,176 @@
+openapi: 3.0.3
+info:
+  title: Mandela vs Mandela vs Matrix Re-imaginator Gateway API
+  description: |
+    Production-grade RESTful API gateway to programmatically generate, scale, and validate
+    computational reality-matrices and divergent timeline simulations.
+  version: 1.0.0
+  contact:
+    name: API Integration Support
+    email: api-support@reimaginator-engine.com
+servers:
+  - url: https://api.reimaginator-engine.com/v1
+    description: Production Gateway
+  - url: https://sandbox.api.reimaginator-engine.com/v1
+    description: Local Developer Sandbox Gateway
+
+paths:
+  /reimagine:
+    post:
+      summary: Execute Reality Matrix Computation
+      description: Submit a baseline collective memory with a target glitch amplitude ratio to simulate timeline divergence.
+      operationId: executeReimagine
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReimagineRequest'
+      responses:
+        '200':
+          description: Computation executed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReimagineResponse'
+        '400':
+          description: Invalid input parameters or rate violations.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          description: Unauthorized. Missing or invalid JWT credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: Rate limit exceeded. Too many requests.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  /reimagine/jobs/{job_id}:
+    get:
+      summary: Retrieve Live Simulation Logs
+      description: Poll real-time progress status, error healing loops, and final artifact URLs for an active job.
+      operationId: getReimagineJob
+      parameters:
+        - name: job_id
+          in: path
+          required: true
+          description: The unique UUID string of the active simulation job.
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Job status retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/JobDetails'
+        '404':
+          description: Job ID not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    ReimagineRequest:
+      type: object
+      required:
+        - target_memory_id
+        - glitch_amplitude
+        - orchestration_model
+      properties:
+        target_memory_id:
+          type: string
+          example: fruit_of_loom_cornucopia
+          description: Slug of the collective recollection parameter.
+        glitch_amplitude:
+          type: integer
+          minimum: 0
+          maximum: 100
+          example: 45
+          description: Percentage strength of simulated system glitch anomaly.
+        orchestration_model:
+          type: string
+          enum: [llama-4-scout, gemini-3.5-flash, deepseek-r1]
+          example: llama-4-scout
+          description: Swarm node model selected to compute consensus.
+
+    ReimagineResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        job_id:
+          type: string
+          format: uuid
+          example: 940f4804-d4e8-4389-8a35-fdb7ff398390
+        timeline_divergence_score:
+          type: integer
+          example: 76
+        status:
+          type: string
+          example: COMPLETED
+        conclusion:
+          type: string
+          example: Partial divergence detected. System suggests overlapping cognitive timelines in grid sectors 4-7.
+
+    JobDetails:
+      type: object
+      properties:
+        job_id:
+          type: string
+          format: uuid
+          example: 940f4804-d4e8-4389-8a35-fdb7ff398390
+        status:
+          type: string
+          enum: [QUEUED, GENERATING, COMPILING, HEALING, DONE, FAILED]
+          example: DONE
+        retry_count:
+          type: integer
+          example: 1
+        created_at:
+          type: string
+          format: date-time
+          example: "2026-07-15T07:14:09Z"
+        logs:
+          type: array
+          items:
+            type: string
+          example: [
+            "Initializing Matrix Simulator Core...",
+            "Computing step 20%: Correlating Recollective Delta with Empirical Matrix...",
+            "[HEAL] Aligning metadata coordinates in partition delta_b...",
+            "=== COMPUTATION COMPLETE ==="
+          ]
+        artifact_apk_url:
+          type: string
+          format: uri
+          example: "https://api.reimaginator-engine.com/artifacts/build_940f4804.apk"
+
+    ErrorResponse:
+      type: object
+      properties:
+        error_code:
+          type: string
+          example: RATE_LIMIT_EXCEEDED
+        message:
+          type: string
+          example: Rate protection rule violated. Maximum 10 simulation builds per hour.

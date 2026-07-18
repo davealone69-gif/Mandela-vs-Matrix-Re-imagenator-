@@ -1,0 +1,52 @@
+{
+  "name": "Mandela vs Mandela vs Matrix Re-imaginator Asset Library",
+  "version": "1.0.0",
+  "last_updated": "2026-07-15",
+  "system_slug": "mandela-matrix-reimaginator",
+  "assets": [
+    {
+      "filename": "assets/logo_primary.svg",
+      "type": "vector/svg",
+      "purpose": "Primary Corporate Brand Logo",
+      "dimensions": "scalable",
+      "description": "Full-color horizontal wordmark and glitched shifting infinity icon for navigation and documentation headers.",
+      "colors_used": ["#070a13", "#10b981", "#8b5cf6", "#06b6d4", "#f8fafc"]
+    },
+    {
+      "filename": "assets/logo_icon.svg",
+      "type": "vector/svg",
+      "purpose": "App Icon & Standalone Brand Mark",
+      "dimensions": "scalable",
+      "description": "The standalone 'infinity glitch' emblem representing converging realities, ideal for app launcher and favicons.",
+      "colors_used": ["#10b981", "#8b5cf6", "#06b6d4"]
+    },
+    {
+      "filename": "assets/favicon.ico",
+      "type": "image/vnd.microsoft.icon",
+      "purpose": "Browser Tab Indicator",
+      "dimensions": "32x32",
+      "description": "Standard multi-resolution favicon compiled from logo_icon.svg."
+    },
+    {
+      "filename": "assets/icon_192.png",
+      "type": "image/png",
+      "purpose": "PWA Android Web Manifest Launcher Icon",
+      "dimensions": "192x192",
+      "description": "High-fidelity PNG launcher icon with maskable padding for Android system rendering."
+    },
+    {
+      "filename": "assets/icon_512.png",
+      "type": "image/png",
+      "purpose": "PWA Desktop Launcher & Splash Screen Icon",
+      "dimensions": "512x512",
+      "description": "Extra high-resolution logo icon for app installation screens and application splash page loading."
+    },
+    {
+      "filename": "brand/colors_typography.css",
+      "type": "text/css",
+      "purpose": "Design Token Style Sheet",
+      "description": "Production CSS file declaring Space Grotesk/Inter/JetBrains Mono font-faces and brand CSS custom properties.",
+      "styles": ["Space Grotesk", "Inter", "JetBrains Mono"]
+    }
+  ]
+}

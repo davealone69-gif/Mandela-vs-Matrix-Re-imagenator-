@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <!-- Background Gradient -->
+    <radialGradient id="iconBgGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#0e1324" />
+      <stop offset="100%" stop-color="#050810" />
+    </radialGradient>
+
+    <!-- Logo Icon Linear Gradient -->
+    <linearGradient id="iconLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="50%" stop-color="#06b6d4" />
+      <stop offset="100%" stop-color="#8b5cf6" />
+    </linearGradient>
+
+    <!-- Glowing effect -->
+    <filter id="iconGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="4" result="blur" />
+      <feMerge>
+        <feMergeNode in="blur" />
+        <feMergeNode in="SourceGraphic" />
+      </feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background Canvas -->
+  <rect width="100%" height="100%" rx="24" fill="url(#iconBgGrad)" stroke="#1a233d" stroke-width="2" />
+
+  <!-- Overlapping realities (Infinity / Glitch Loops) -->
+  <g transform="translate(15, 15)" filter="url(#iconGlow)">
+    <!-- Shifting Grid Background Accent -->
+    <path d="M 10 35 L 60 35 M 35 10 L 35 60" stroke="#10b981" stroke-width="0.5" opacity="0.15" />
+    
+    <!-- Outer Cybernetic Ring -->
+    <circle cx="35" cy="35" r="32" fill="none" stroke="url(#iconLogoGrad)" stroke-width="1.5" stroke-dasharray="4, 12" opacity="0.4" />
+
+    <!-- Left loop path -->
+    <path d="M 35 35 C 12 12, 12 58, 35 35 Z" fill="none" stroke="url(#iconLogoGrad)" stroke-width="6" stroke-linecap="round" />
+    
+    <!-- Right loop path -->
+    <path d="M 35 35 C 58 12, 58 58, 35 35 Z" fill="none" stroke="url(#iconLogoGrad)" stroke-width="6" stroke-linecap="round" />
+
+    <!-- Center Glitched Core -->
+    <circle cx="35" cy="35" r="5" fill="#f8fafc" />
+    <line x1="28" y1="35" x2="42" y2="35" stroke="#f8fafc" stroke-width="3" stroke-linecap="round" />
+
+    <!-- Matrix binary coordinates glitch hints -->
+    <rect x="25" y="15" width="2" height="2" fill="#10b981" />
+    <rect x="43" y="53" width="2" height="2" fill="#8b5cf6" />
+    <rect x="15" y="42" width="2" height="2" fill="#06b6d4" />
+  </g>
+</svg>

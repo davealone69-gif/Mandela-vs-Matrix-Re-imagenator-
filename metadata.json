@@ -1,0 +1,6 @@
+{
+  "name": "Mandela vs Matrix Re-Imaginator",
+  "description": "An interactive, AI-powered web IDE and developer suite built to customize any and all other apps. Edit, refactor, compile, and optimize Android codebases with live AI agents, diagnostics, and visual control panels.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,13 @@
+{
+  "ragVersion": "1.0.0",
+  "activeAdapterVersion": "Mandela vs Mandela vs Matrix Re-imaginator-adapter-v1.0.0",
+  "embeddingModel": "gemini-embedding-2-preview",
+  "retrievalK": 3,
+  "minSimilarity": 0.35,
+  "systemRules": [
+    "Synthesize Jetpack Compose layouts with proper, stable layout keys.",
+    "Always handle coroutines safely bound to lifecycle scopes like lifecyclescope or viewModelScope.",
+    "Secure credential storage via EncryptedSharedPreferences."
+  ],
+  "lastTrainedTimestamp": "2026-07-15T13:51:35.508Z"
+}

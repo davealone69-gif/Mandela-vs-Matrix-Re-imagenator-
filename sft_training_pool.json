@@ -1,0 +1,16 @@
+[
+  {
+    "id": "sft_1",
+    "query": "how to clean fragment bindings?",
+    "response": "Class binding reference should be nullified inside onDestroyView to prevent memory leakage.",
+    "feedback": "positive",
+    "timestamp": "2026-07-18T04:17:10.907Z"
+  },
+  {
+    "id": "sft_2",
+    "query": "how to avoid laggy lazy column recompositions?",
+    "response": "Always provide unique, stable keys to items in Jetpack Compose LazyColumn layouts, and wrap heavy mapping operations in remember.",
+    "feedback": "positive",
+    "timestamp": "2026-07-18T04:17:10.908Z"
+  }
+]

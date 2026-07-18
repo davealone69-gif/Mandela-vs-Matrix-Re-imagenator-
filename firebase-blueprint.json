@@ -1,0 +1,26 @@
+{
+  "entities": {
+    "ChatHistory": {
+      "title": "ChatHistory",
+      "description": "User's chat history containing past dialogue messages",
+      "type": "object",
+      "properties": {
+        "messages": {
+          "type": "array",
+          "description": "List of user and assistant messages"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["messages", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/chatHistory/{documentId}": {
+      "schema": "ChatHistory",
+      "description": "Saved chat histories per user"
+    }
+  }
+}

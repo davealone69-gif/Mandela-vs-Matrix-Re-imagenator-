@@ -1,0 +1,46 @@
+[
+  {
+    "id": "vault_math_1",
+    "domain": "math",
+    "title": "Euler's Identity & Complex Analysis",
+    "difficulty": "extreme",
+    "scientificConstant": "e^(i*pi) + 1 = 0",
+    "content": "Euler's identity is often considered the most beautiful theorem in mathematics because it connects five fundamental constants: e, i, pi, 1, and 0 in a single elegant equation.",
+    "codePattern": "Math.exp(Math.PI * i) + 1 === 0",
+    "reasoningPattern": "Applying Taylor series expansions for e^x, sin(x), and cos(x) to prove Euler's formula e^(ix) = cos(x) + i*sin(x).",
+    "embedding": []
+  },
+  {
+    "id": "vault_science_1",
+    "domain": "science",
+    "title": "Einstein's Mass-Energy Equivalence",
+    "difficulty": "extreme",
+    "scientificConstant": "E = mc^2",
+    "content": "In physics, mass-energy equivalence states that any physics system has an energy content directly proportional to its mass, mediated by the square of the speed of light.",
+    "codePattern": "const energy = mass * Math.pow(299792458, 2)",
+    "reasoningPattern": "Relativistic kinetic energy derivation from Lorenz transformation invariance equations under high velocity frameworks.",
+    "embedding": []
+  },
+  {
+    "id": "vault_eng_1",
+    "domain": "engineering",
+    "title": "Navier-Stokes Equations for Fluid Dynamics",
+    "difficulty": "extreme",
+    "scientificConstant": "rho * (Du/Dt) = -grad(p) + div(T) + f",
+    "content": "The Navier-Stokes equations describe the motion of viscous fluid substances. Finding smooth solutions in three dimensions is a Clay Millennium Prize problem.",
+    "codePattern": "function solveNavierStokes(density, velocityGrid, viscosity) { /* 3D Poisson pressure grids */ }",
+    "reasoningPattern": "Convective acceleration coupled with velocity vector divergence constraints in continuous fluid media modeling.",
+    "embedding": []
+  },
+  {
+    "id": "vault_coding_1",
+    "domain": "coding",
+    "title": "PageRank Graph Centrality Matrix Iteration",
+    "difficulty": "extreme",
+    "scientificConstant": "PR(A) = (1-d) + d * sum(PR(Ti)/C(Ti))",
+    "content": "PageRank calculates probability distributions representing the likelihood that a person randomly clicking on links will arrive at any particular node of a directed graph.",
+    "codePattern": "const transitionMatrix = graph.computeTransitionMatrix(); const pagerank = powerIteration(transitionMatrix, 0.85);",
+    "reasoningPattern": "Eigenvector centrality solution of irreducible stochastic adjacency matrix using high-concurrency Sparse Matrix power iteration.",
+    "embedding": []
+  }
+]
