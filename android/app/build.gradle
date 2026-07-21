@@ -62,3 +62,5 @@ try {
 } catch(Exception e) {
     logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
 }
+mkdir -p android/app
+echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/keystore.jks
