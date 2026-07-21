@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android' // <-- Ensure this line is present
 
 android {
     namespace = "com.drivelog"
