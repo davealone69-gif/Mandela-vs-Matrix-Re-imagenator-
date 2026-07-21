@@ -3,7 +3,11 @@ apply plugin: 'kotlin-android' // <-- Ensure this line is present
 
 android {
     namespace = "com.drivelog"
-    compileSdk = rootProject.ext.compileSdkVersion
+    compileSdk = rootProject.ext.compileSdkVersion***
+***" | base64 -d > app/keystore.jks
+shell: /usr/bin/bash -e {0}
+env:
+  JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.19-10/x64
     defaultConfig {
         applicationId "com.drivelog"
         minSdkVersion rootProject.ext.minSdkVersion
