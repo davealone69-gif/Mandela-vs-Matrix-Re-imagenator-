@@ -1,4 +1,115 @@
-name: Android APK Build
+name: Android CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-android:
+    runs-on: ubuntu-latest
+
+    env:
+      # Adjust to your app
+      ANDROID_PROJECT_DIR: android
+      NODE_VERSION: '22'
+      JAVA_VERSION: '17'
+
+    steps:
+      # 1. Checkout
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # 2. Node.js for Capacitor
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      # 3. Java / Android toolchain
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: 'gradle'
+
+      # 4. Install JS deps
+      - name: Install npm dependencies
+        run: npm ci
+
+      # 5. Sync Capacitor
+      - name: Sync Capacitor (Android)
+        run: npx cap sync android
+
+      # 6. Gradle build (unsigned release)
+      - name: Build Android release
+        working-directory: ${{ env.ANDROID_PROJECT_DIR }}
+        run: ./gradlew assembleRelease
+
+      # 7. Upload APK artifact
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-release-apk
+          path: |
+            ${{ env.ANDROID_PROJECT_DIR }}/app/build/outputs/apk/release/*.apk
+
+  # OPTIONAL: signed release build (enable when you add secrets)
+  signed-release:
+    runs-on: ubuntu-latest
+    needs: build-android
+    if: github.ref == 'refs/heads/main'
+
+    env:
+      ANDROID_PROJECT_DIR: android
+      NODE_VERSION: '22'
+      JAVA_VERSION: '17'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Setup JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.JAVA_VERSION }}
+          cache: 'gradle'
+
+      # Decode keystore from secret (BASE64)
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > release.keystore
+
+      - name: Configure signing
+        working-directory: ${{ env.ANDROID_PROJECT_DIR }}
+        run: |
+          cat >> gradle.properties <<EOF
+          MYAPP_STORE_FILE=../release.keystore
+          MYAPP_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          MYAPP_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}
+          MYAPP_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}
+          EOF
+
+      - name: Build signed release
+        working-directory: ${{ env.ANDROID_PROJECT_DIR }}
+        run: ./gradlew assembleRelease
+
+      - name: Upload signed APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: android-signed-release-apk
+          path: |
+            ${{ env.ANDROID_PROJECT_DIR }}/app/build/outputs/apk/release/*.apkname: Android APK Build
 
 permissions:
   contents: read
