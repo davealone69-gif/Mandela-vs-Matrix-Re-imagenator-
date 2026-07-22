@@ -22,7 +22,7 @@ jobs:
           node-version: '22'
           cache: 'npm'
 
-      - name: Set up JDK
+      - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
           distribution: temurin
@@ -40,9 +40,18 @@ jobs:
       - name: Prepare keystore directory
         run: mkdir -p android/app
 
-      - name: Decode keystore
+      - name: Create keystore (if no secret provided)
         run: |
-          if [ ! -z "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
+          if [ -z "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
+            echo "No keystore secret found. Generating temporary keystore..."
+            keytool -genkey -v -keystore android/app/keystore.jks \
+              -keyalg RSA -keysize 2048 -validity 10000 \
+              -alias mandela \
+              -storepass 123456 \
+              -keypass 123456 \
+              -dname "CN=Mandela Matrix,O=Matrix,L=Neo,S=Zion,C=US"
+          else
+            echo "Decoding keystore from secret..."
             echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/keystore.jks
           fi
 
@@ -51,26 +60,14 @@ jobs:
         run: |
           cat >> gradle.properties <<EOF
           MYAPP_RELEASE_STORE_FILE=app/keystore.jks
-          MYAPP_RELEASE_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
-          MYAPP_RELEASE_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}
-          MYAPP_RELEASE_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}
+          MYAPP_RELEASE_STORE_PASSWORD=123456
+          MYAPP_RELEASE_KEY_ALIAS=mandela
+          MYAPP_RELEASE_KEY_PASSWORD=123456
           EOF
 
       - name: Fix gradlew permissions
         working-directory: android
         run: chmod +x gradlew
-
-      - name: Initialize Gradle Wrapper
-        working-directory: android
-        run: |
-          if ! ./gradlew --version 2>/dev/null; then
-            echo "Gradle wrapper failed, attempting to regenerate..."
-            curl -sL https://services.gradle.org/distributions/gradle-8.13-bin.zip -o /tmp/gradle.zip
-            unzip -q /tmp/gradle.zip -d /tmp/gradle-dist
-            /tmp/gradle-dist/gradle-8.13/bin/gradle wrapper --gradle-version 8.13 --distribution-type bin
-            chmod +x gradlew
-            ./gradlew --version
-          fi
 
       - name: Build signed release APK
         working-directory: android
