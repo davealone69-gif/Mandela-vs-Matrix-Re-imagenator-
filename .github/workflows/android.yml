@@ -1,4 +1,11 @@
-- name: Prepare keystore directory
+# 🔥 FIX: ensure gradlew is executable
+      - name: Fix gradlew permissions
+        working-directory: ${{ env.ANDROID_DIR }}
+        run: chmod +x gradlew
+
+      - name: Build signed release
+        working-directory: ${{ env.ANDROID_DIR }}
+        run: ./gradlew assembleRelease- name: Prepare keystore directory
         run: mkdir -p ${{ env.ANDROID_DIR }}/app
 
       - name: Decode keystore
