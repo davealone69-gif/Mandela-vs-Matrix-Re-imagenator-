@@ -3,6 +3,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
+import rateLimit from 'express-rate-limit';
 import { GoogleGenAI, Modality } from '@google/genai';
 import { WebSocketServer } from 'ws';
 import { createServer as createViteServer } from 'vite';
@@ -8116,28 +8117,19 @@ Return JSON:
   });
 });
 
-const apkDownloadRequestWindowMs = 60 * 1000;
-const apkDownloadRequestLimit = 30;
-const apkDownloadRequestsByIp = new Map<string, number[]>();
+const apkDownloadLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    success: false,
+    message: 'Too many APK download requests. Please wait and try again.'
+  }
+});
 
 // Real APK Download Endpoint
-app.get('/api/download-apk', (req, res) => {
-  const requestIp = req.ip || req.socket.remoteAddress || 'unknown';
-  const now = Date.now();
-  const recentRequestTimestamps = (apkDownloadRequestsByIp.get(requestIp) || [])
-    .filter((timestamp) => now - timestamp < apkDownloadRequestWindowMs);
-
-  if (recentRequestTimestamps.length >= apkDownloadRequestLimit) {
-    apkDownloadRequestsByIp.set(requestIp, recentRequestTimestamps);
-    return res.status(429).json({
-      success: false,
-      message: 'Too many APK download requests. Please wait and try again.'
-    });
-  }
-
-  recentRequestTimestamps.push(now);
-  apkDownloadRequestsByIp.set(requestIp, recentRequestTimestamps);
-
+app.get('/api/download-apk', apkDownloadLimiter, (req, res) => {
   const variant = req.query.variant === 'release' ? 'release' : 'debug';
   const apkDir = path.join(process.cwd(), 'android', 'app', 'build', 'outputs', 'apk', variant);
   const preferredArtifacts = variant === 'release'
