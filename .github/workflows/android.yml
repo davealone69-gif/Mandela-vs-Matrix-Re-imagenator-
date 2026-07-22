@@ -1,7 +1,4 @@
-name: android
-
-permissions:
-  contents: read
+name: android-debug
 
 on:
   push:
@@ -10,101 +7,53 @@ on:
     branches: [ main ]
 
 jobs:
-  android:
+  debug:
     runs-on: ubuntu-latest
+
     env:
       ANDROID_DIR: android
       NODE_VERSION: '22'
       JAVA_VERSION: '17'
 
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Use Node.js 22
+      - name: Install Node.js
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Use Java 17
+      - name: Install Java
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: ${{ env.JAVA_VERSION }}
           cache: gradle
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Verify SDK tools
-        run: sdkmanager --list || echo "SDK OK"
-
-      - name: Install dependencies
+      - name: Install NPM dependencies
         run: npm ci
 
       - name: Build web assets
         run: npm run build
 
-      - name: Sync Capacitor
+      - name: Sync Capacitor Android
         run: npx cap sync android
 
-      - name: Prepare keystore directory
-        run: mkdir -p ${{ env.ANDROID_DIR }}/app
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
 
-      - name: Create keystore (if no secret provided)
-        env:
-          ANDROID_KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
-        run: |
-          DECODED=false
-          if [ -n "$ANDROID_KEYSTORE_BASE64" ]; then
-            NORMALIZED_KEYSTORE="$(printf '%s' "$ANDROID_KEYSTORE_BASE64" | tr -d '[:space:]')"
-            if printf '%s' "$NORMALIZED_KEYSTORE" | base64 --decode > android/app/keystore.jks 2>/dev/null; then
-              DECODED=true
-            elif printf '%s' "$NORMALIZED_KEYSTORE" | tr '_-' '/+' | base64 --decode > android/app/keystore.jks 2>/dev/null; then
-              DECODED=true
-            fi
-          fi
-
-          if [ "$DECODED" = true ]; then
-            echo "Decoded keystore from secret."
-          else
-            echo "No valid keystore secret found. Generating temporary keystore..."
-            rm -f android/app/keystore.jks
-            keytool -genkey -v -keystore android/app/keystore.jks \
-              -keyalg RSA -keysize 2048 -validity 10000 \
-              -alias mandela \
-              -storepass 123456 \
-              -keypass 123456 \
-              -dname "CN=Mandela Matrix,O=Matrix,L=Neo,S=Zion,C=US"
-          fi
-
-      - name: Inject signing config
-        working-directory: android
-        run: |
-          cat >> gradle.properties <<EOF
-          MYAPP_RELEASE_STORE_FILE=app/keystore.jks
-          MYAPP_RELEASE_STORE_PASSWORD=123456
-          MYAPP_RELEASE_KEY_ALIAS=mandela
-          MYAPP_RELEASE_KEY_PASSWORD=123456
-          EOF
-
-      - name: Fix gradlew permissions
+      - name: Ensure Gradle wrapper is executable
         working-directory: ${{ env.ANDROID_DIR }}
         run: chmod +x gradlew
 
-      - name: Test Google Maven DNS
-        run: |
-          ping -c 3 dl.google.com || echo "DNS FAIL"
-
-      - name: Build signed release
+      - name: Build debug APK
         working-directory: ${{ env.ANDROID_DIR }}
-        run: ./gradlew assembleRelease
+        run: ./gradlew assembleDebug --stacktrace --info
 
-      - name: Upload signed APK
+      - name: Upload debug APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: Mandela-Matrix-Re-Imagenator-APK
-          path: android/app/build/outputs/apk/release/*.apk
+          name: debug-apk
+          path: ${{ env.ANDROID_DIR }}/app/build/outputs/apk/debug/*.apk
