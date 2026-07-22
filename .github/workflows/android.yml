@@ -28,10 +28,6 @@ jobs:
           distribution: temurin
           java-version: 17
 
-      - name: Clean gradle wrapper
-        working-directory: android
-        run: rm -rf gradle/wrapper/gradle-wrapper.jar .gradle/
-
       - name: Install dependencies
         run: npm ci
 
@@ -63,6 +59,10 @@ jobs:
       - name: Fix gradlew permissions
         working-directory: android
         run: chmod +x gradlew
+
+      - name: Initialize Gradle Wrapper
+        working-directory: android
+        run: ./gradlew --version
 
       - name: Build signed release APK
         working-directory: android
