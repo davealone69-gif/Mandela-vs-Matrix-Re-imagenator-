@@ -37,22 +37,26 @@ jobs:
       - name: Sync Capacitor
         run: npx cap sync android
 
-      - name: Prepare keystore directory
-        run: mkdir -p android/app
-
-      - name: Create keystore (if no secret provided)
+      - name: Prepare keystore
         run: |
-          if [ -z "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
-            echo "No keystore secret found. Generating temporary keystore..."
+          mkdir -p android/app
+          if [ -n "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ] && \
+             echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/keystore.jks 2>/dev/null; then
+            echo "Using keystore from secret"
+            echo "KEYSTORE_PASS=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}" >> "$GITHUB_ENV"
+            echo "KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}" >> "$GITHUB_ENV"
+            echo "KEY_PASS=${{ secrets.ANDROID_KEY_PASSWORD }}" >> "$GITHUB_ENV"
+          else
+            echo "Generating temporary debug keystore..."
             keytool -genkey -v -keystore android/app/keystore.jks \
               -keyalg RSA -keysize 2048 -validity 10000 \
               -alias mandela \
-              -storepass 123456 \
-              -keypass 123456 \
+              -storepass temporarypass \
+              -keypass temporarypass \
               -dname "CN=Mandela Matrix,O=Matrix,L=Neo,S=Zion,C=US"
-          else
-            echo "Decoding keystore from secret..."
-            echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/keystore.jks
+            echo "KEYSTORE_PASS=temporarypass" >> "$GITHUB_ENV"
+            echo "KEY_ALIAS=mandela" >> "$GITHUB_ENV"
+            echo "KEY_PASS=temporarypass" >> "$GITHUB_ENV"
           fi
 
       - name: Inject signing config
@@ -60,9 +64,9 @@ jobs:
         run: |
           cat >> gradle.properties <<EOF
           MYAPP_RELEASE_STORE_FILE=app/keystore.jks
-          MYAPP_RELEASE_STORE_PASSWORD=123456
-          MYAPP_RELEASE_KEY_ALIAS=mandela
-          MYAPP_RELEASE_KEY_PASSWORD=123456
+          MYAPP_RELEASE_STORE_PASSWORD=${{ env.KEYSTORE_PASS }}
+          MYAPP_RELEASE_KEY_ALIAS=${{ env.KEY_ALIAS }}
+          MYAPP_RELEASE_KEY_PASSWORD=${{ env.KEY_PASS }}
           EOF
 
       - name: Fix gradlew permissions
