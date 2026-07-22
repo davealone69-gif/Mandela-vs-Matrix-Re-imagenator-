@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     env:
       ANDROID_DIR: android
       NODE_VERSION: '22'
