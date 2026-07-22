@@ -1,10 +1,13 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
+def configureTopRepositories = { repoHandler ->
+    repoHandler.google()
+    repoHandler.mavenCentral()
+}
+
 buildscript {
-    
     repositories {
-        google()
-        mavenCentral()
+        configureTopRepositories(delegate)
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:8.13.0'
@@ -19,8 +22,7 @@ apply from: "variables.gradle"
 
 allprojects {
     repositories {
-        google()
-        mavenCentral()
+        configureTopRepositories(delegate)
     }
 }
 
