@@ -40,6 +40,123 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Build web assets
+        run: npm run build
+
+      - name: Sync Capacitor
+        run: npx cap sync android
+
+      - name: Prepare keystore directory
+        run: mkdir -p ${{ env.ANDROID_DIR }}/app
+
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > ${{ env.ANDROID_DIR }}/app/keystore.jks
+
+      - name: Inject signing config
+        working-directory: ${{ env.ANDROID_DIR }}
+        run: |
+          cat >> gradle.properties <<EOF
+          MYAPP_STORE_FILE=app/keystore.jks
+          MYAPP_STORE_PASSWORD=${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          MYAPP_KEY_ALIAS=${{ secrets.ANDROID_KEY_ALIAS }}
+          MYAPP_KEY_PASSWORD=${{ secrets.ANDROID_KEY_PASSWORD }}
+          EOF
+
+      # 🔥 FIX: ensure gradlew is executable
+      - name: Fix gradlew permissions
+        working-directory: ${{ env.ANDROID_DIR }}
+        run: chmod +x gradlew
+
+      - name: Build signed release
+        working-directory: ${{ env.ANDROID_DIR }}
+        run: ./gradlew assembleRelease
+
+      - name: Upload signed APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: signed-apk
+          path: ${{ env.ANDROID_DIR }}/app/build/outputs/apk/release/*.apk
+
+      - name: Read current version
+        id: readver
+        run: |
+          VERSION=$(jq -r '.version' package.json)
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Bump version
+        id: bumpver
+        run: |
+          OLD=${{ steps.readver.outputs.version }}
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$OLD"
+          NEW="$MAJOR.$MINOR.$((PATCH+1))"
+          jq ".version = \"$NEW\"" package.json > package.tmp.json
+          mv package.tmp.json package.json
+          echo "new_version=$NEW" >> $GITHUB_OUTPUT
+
+      - name: Bump Android versionCode
+        run: |
+          FILE="${{ env.ANDROID_DIR }}/app/build.gradle"
+          CODE=$(grep versionCode $FILE | awk '{print $2}')
+          NEWCODE=$((CODE+1))
+          sed -i "s/versionCode $CODE/versionCode $NEWCODE/" $FILE
+
+      - name: Commit version bump
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add package.json ${{ env.ANDROID_DIR }}/app/build.gradle
+          git commit -m "ci: bump version to ${{ steps.bumpver.outputs.new_version }}"
+
+      - name: Create tag
+        run: |
+          TAG="v${{ steps.bumpver.outputs.new_version }}"
+          git tag "$TAG"
+          git push origin "$TAG"
+
+      - name: Push changes
+        run: git pushname: android
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  android:
+    runs-on: ubuntu-latest
+
+    env:
+      ANDROID_DIR: android
+      NODE_VERSION: '22'
+      JAVA_VERSION: '17'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Use Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Debug Node version
+        run: node -v
+
+      - name: Use Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+
+      - name: Install dependencies
+        run: npm ci
+
       # REQUIRED: build web assets so dist/ exists
       - name: Build web assets
         run: npm run build
