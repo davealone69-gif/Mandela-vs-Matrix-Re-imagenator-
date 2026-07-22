@@ -81,6 +81,10 @@ jobs:
         working-directory: android
         run: chmod +x gradlew
 
+      - name: Test Google Maven DNS
+        run: |
+          ping -c 3 dl.google.com || echo "DNS FAIL"
+
       - name: Build signed release APK
         working-directory: android
         run: ./gradlew assembleRelease --no-daemon
