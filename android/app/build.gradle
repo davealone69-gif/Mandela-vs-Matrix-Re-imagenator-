@@ -1,13 +1,8 @@
-R2093apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android' // <-- Ensure this line is present
+apply plugin: 'com.android.application'
 
 android {
     namespace = "com.drivelog"
-    compileSdk = rootProject.ext.compileSdkVersion***
-***" | base64 -d > app/keystore.jks
-shell: /usr/bin/bash -e {0}
-env:
-  JAVA_HOME: /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk/17.0.19-10/x64
+    compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
         applicationId "com.drivelog"
         minSdkVersion rootProject.ext.minSdkVersion
@@ -23,17 +18,17 @@ env:
     }
     signingConfigs {
         release {
-            storeFile file(System.getenv("KEYSTORE_PATH") ?: "release.keystore")
-            storePassword System.getenv("KEYSTORE_PASSWORD")
-            keyAlias System.getenv("KEY_ALIAS")
-            keyPassword System.getenv("KEY_PASSWORD")
+            storeFile file(MYAPP_RELEASE_STORE_FILE)
+            storePassword MYAPP_RELEASE_STORE_PASSWORD
+            keyAlias MYAPP_RELEASE_KEY_ALIAS
+            keyPassword MYAPP_RELEASE_KEY_PASSWORD
         }
     }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.release
         }
     }
 }
@@ -66,5 +61,3 @@ try {
 } catch(Exception e) {
     logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
 }
-mkdir -p android/app
-echo "${{ secrets.KEYSTORE_BASE64 }}" | base64 -d > android/app/keystore.jks
