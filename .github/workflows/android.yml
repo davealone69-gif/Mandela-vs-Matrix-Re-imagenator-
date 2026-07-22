@@ -1,4 +1,9 @@
-name: android
+- name: Prepare keystore directory
+        run: mkdir -p ${{ env.ANDROID_DIR }}/app
+
+      - name: Decode keystore
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > ${{ env.ANDROID_DIR }}/app/keystore.jksname: android
 
 on:
   push:
