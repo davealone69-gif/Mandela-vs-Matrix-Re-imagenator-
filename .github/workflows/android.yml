@@ -42,17 +42,23 @@ jobs:
 
       - name: Create keystore (if no secret provided)
         run: |
-          if [ -z "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
-            echo "No keystore secret found. Generating temporary keystore..."
+          generate_temp_keystore() {
+            echo "Generating temporary keystore..."
             keytool -genkey -v -keystore android/app/keystore.jks \
               -keyalg RSA -keysize 2048 -validity 10000 \
               -alias mandela \
               -storepass 123456 \
               -keypass 123456 \
               -dname "CN=Mandela Matrix,O=Matrix,L=Neo,S=Zion,C=US"
+          }
+          if [ -z "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" ]; then
+            echo "No keystore secret found. Generating temporary keystore..."
+            generate_temp_keystore
+          elif echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/keystore.jks 2>/dev/null; then
+            echo "Keystore decoded successfully from secret."
           else
-            echo "Decoding keystore from secret..."
-            echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 -d > android/app/keystore.jks
+            echo "Warning: ANDROID_KEYSTORE_BASE64 secret contains invalid base64. Generating temporary keystore..."
+            generate_temp_keystore
           fi
 
       - name: Inject signing config
