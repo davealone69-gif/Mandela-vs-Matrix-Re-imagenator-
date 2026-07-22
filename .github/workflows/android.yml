@@ -1,4 +1,4 @@
-name: android-debug
+name: android-dual
 
 on:
   push:
@@ -7,13 +7,14 @@ on:
     branches: [ main ]
 
 jobs:
-  debug:
+  build:
     runs-on: ubuntu-latest
 
     env:
       ANDROID_DIR: android
       NODE_VERSION: '22'
       JAVA_VERSION: '17'
+      HAS_ANDROID_SIGNING_SECRETS: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' && secrets.ANDROID_KEYSTORE_PASSWORD != '' && secrets.ANDROID_KEY_ALIAS != '' && secrets.ANDROID_KEY_PASSWORD != '' }}
 
     steps:
       - name: Checkout repository
@@ -57,3 +58,76 @@ jobs:
         with:
           name: debug-apk
           path: ${{ env.ANDROID_DIR }}/app/build/outputs/apk/debug/*.apk
+
+      - name: Prepare keystore directory
+        if: env.HAS_ANDROID_SIGNING_SECRETS == 'true'
+        run: mkdir -p ${{ env.ANDROID_DIR }}/app
+
+      - name: Decode Android keystore
+        if: env.HAS_ANDROID_SIGNING_SECRETS == 'true'
+        run: |
+          echo "${{ secrets.ANDROID_KEYSTORE_BASE64 }}" | base64 --decode > ${{ env.ANDROID_DIR }}/app/keystore.jks
+
+      - name: Inject signing configuration
+        if: env.HAS_ANDROID_SIGNING_SECRETS == 'true'
+        working-directory: ${{ env.ANDROID_DIR }}
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          python <<'PY'
+          import os
+          from pathlib import Path
+
+          path = Path("gradle.properties")
+          existing_lines = path.read_text().splitlines()
+          replacements = {
+              "MYAPP_RELEASE_STORE_FILE": "app/keystore.jks",
+              "MYAPP_RELEASE_STORE_PASSWORD": os.environ["ANDROID_KEYSTORE_PASSWORD"],
+              "MYAPP_RELEASE_KEY_ALIAS": os.environ["ANDROID_KEY_ALIAS"],
+              "MYAPP_RELEASE_KEY_PASSWORD": os.environ["ANDROID_KEY_PASSWORD"],
+          }
+
+          updated_lines = []
+          seen = set()
+          for line in existing_lines:
+              replaced = False
+              for key, value in replacements.items():
+                  if line.startswith(f"{key}="):
+                      updated_lines.append(f"{key}={value}")
+                      seen.add(key)
+                      replaced = True
+                      break
+              if not replaced:
+                  updated_lines.append(line)
+
+          for key, value in replacements.items():
+              if key not in seen:
+                  updated_lines.append(f"{key}={value}")
+
+          path.write_text("\n".join(updated_lines) + "\n")
+          PY
+
+      - name: Build signed release artifacts
+        if: env.HAS_ANDROID_SIGNING_SECRETS == 'true'
+        working-directory: ${{ env.ANDROID_DIR }}
+        run: ./gradlew assembleRelease bundleRelease --stacktrace --info
+
+      - name: Upload release artifacts
+        if: env.HAS_ANDROID_SIGNING_SECRETS == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: |
+            ${{ env.ANDROID_DIR }}/app/build/outputs/apk/release/*.apk
+            ${{ env.ANDROID_DIR }}/app/build/outputs/bundle/release/*.aab
+
+      - name: Report skipped release signing
+        if: env.HAS_ANDROID_SIGNING_SECRETS != 'true'
+        run: |
+          {
+            echo "## Android release signing skipped"
+            echo
+            echo "Debug APK was built successfully, but release signing secrets were not available."
+          } >> "$GITHUB_STEP_SUMMARY"
