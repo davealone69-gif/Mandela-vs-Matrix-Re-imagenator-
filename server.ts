@@ -8120,29 +8120,43 @@ Return JSON:
 app.get('/api/download-apk', (req, res) => {
   const variant = req.query.variant === 'release' ? 'release' : 'debug';
   const apkDir = path.join(process.cwd(), 'android', 'app', 'build', 'outputs', 'apk', variant);
-  const apkPath = path.join(apkDir, `app-${variant}.apk`);
-  
-  if (!fs.existsSync(apkPath)) {
-    try {
-      fs.mkdirSync(apkDir, { recursive: true });
-      // Create a small placeholder text/binary representing the compiled package
-      const placeholderContent = `Mandela vs Matrix Re-Imaginator A to APK Autonomous Android APK Compilation Package (${variant.toUpperCase()})\n` +
-                                 `Status: Sideload Ready\n` +
-                                 `Variant: ${variant.toUpperCase()}\n` +
-                                 `Target Architecture: Universal (ARM64/X86_64)\n` +
-                                 `Timestamp: ` + new Date().toISOString() + `\n` +
-                                 `Verification Signature: SHA-256 Verified\n`;
-      fs.writeFileSync(apkPath, placeholderContent, 'utf-8');
-    } catch (err) {
-      console.error("Failed to write placeholder APK:", err);
+  const preferredArtifacts = variant === 'release'
+    ? ['app-release.apk', 'app-release-unsigned.apk']
+    : ['app-debug.apk'];
+
+  let apkPath: string | null = null;
+
+  for (const artifactName of preferredArtifacts) {
+    const candidate = path.join(apkDir, artifactName);
+    if (fs.existsSync(candidate)) {
+      apkPath = candidate;
+      break;
     }
   }
 
-  if (fs.existsSync(apkPath)) {
-    res.download(apkPath, `Mandela-vs-Matrix-Re-Imaginator-${variant}.apk`);
-  } else {
-    res.status(404).send("APK is still building or not found. Please try again in a few minutes.");
+  if (!apkPath && fs.existsSync(apkDir)) {
+    const apkCandidates = fs
+      .readdirSync(apkDir)
+      .filter((fileName) => fileName.endsWith('.apk'))
+      .map((fileName) => {
+        const fullPath = path.join(apkDir, fileName);
+        return { fullPath, modifiedAt: fs.statSync(fullPath).mtimeMs };
+      })
+      .sort((a, b) => b.modifiedAt - a.modifiedAt);
+
+    apkPath = apkCandidates[0]?.fullPath ?? null;
   }
+
+  if (apkPath && fs.existsSync(apkPath)) {
+    res.download(apkPath, `Mandela-vs-Matrix-Re-Imaginator-${variant}.apk`);
+    return;
+  }
+
+  res.status(404).json({
+    success: false,
+    message: `No ${variant.toUpperCase()} APK found. Build the Android app first and retry download.`,
+    expectedDirectory: apkDir
+  });
 });
 
 // Start Server Function
