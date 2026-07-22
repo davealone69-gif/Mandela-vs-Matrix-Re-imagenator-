@@ -11,6 +11,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      ANDROID_DIR: android
 
     steps:
       - name: Checkout
@@ -30,6 +32,9 @@ jobs:
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
+
+      - name: Verify SDK tools
+        run: sdkmanager --list || echo "SDK OK"
 
       - name: Install dependencies
         run: npm ci
@@ -81,16 +86,16 @@ jobs:
           EOF
 
       - name: Fix gradlew permissions
-        working-directory: android
+        working-directory: ${{ env.ANDROID_DIR }}
         run: chmod +x gradlew
 
       - name: Test Google Maven DNS
         run: |
           ping -c 3 dl.google.com || echo "DNS FAIL"
 
-      - name: Build signed release APK
-        working-directory: android
-        run: ./gradlew assembleRelease --no-daemon
+      - name: Build signed release
+        working-directory: ${{ env.ANDROID_DIR }}
+        run: ./gradlew assembleRelease
 
       - name: Upload signed APK
         uses: actions/upload-artifact@v4
