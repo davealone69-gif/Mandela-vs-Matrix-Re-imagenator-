@@ -1,4 +1,6 @@
-name: android-dual
+./gradlew --versionrm -rf ~/.gradle/cachesnode-version: 20sdkmanager "platform-tools" \
+           "platforms;android-34" \
+           "build-tools;34.0.0"name: android-dual
 
 on:
   push:
