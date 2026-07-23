@@ -1,6 +1,4 @@
-./gradlew --versionrm -rf ~/.gradle/cachesnode-version: 20sdkmanager "platform-tools" \
-           "platforms;android-34" \
-           "build-tools;34.0.0"name: android-dual
+name: android-dual
 
 on:
   push:
@@ -11,27 +9,23 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    
+    runs-on: ubuntu-22.04
+
     env:
       ANDROID_DIR: android
       NODE_VERSION: '22'
       JAVA_VERSION: '17'
       HAS_ANDROID_SIGNING_SECRETS: ${{ secrets.ANDROID_KEYSTORE_BASE64 != '' && secrets.ANDROID_KEYSTORE_PASSWORD != '' && secrets.ANDROID_KEY_ALIAS != '' && secrets.ANDROID_KEY_PASSWORD != '' }}
 
-
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'npm'
 
-      - name: Install Java
-        uses: actions/setup-java@v4
+      - uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: ${{ env.JAVA_VERSION }}
@@ -44,10 +38,17 @@ jobs:
         run: npm run build
 
       - name: Sync Capacitor Android
-        run: npx cap sync android
+        run: npx cap sync android --no-interactive
 
-      - name: Setup Android SDK
+      - name: Install Android SDK 36
         uses: android-actions/setup-android@v3
+        with:
+          api-level: 36
+          build-tools: 36.0.0
+          cmdline-tools-version: 12.0
+
+      - name: Clean Gradle caches
+        run: rm -rf ~/.gradle/caches
 
       - name: Ensure Gradle wrapper is executable
         working-directory: ${{ env.ANDROID_DIR }}
@@ -55,10 +56,9 @@ jobs:
 
       - name: Build debug APK
         working-directory: ${{ env.ANDROID_DIR }}
-        run: ./gradlew assembleDebug --stacktrace --info
+        run: ./gradlew --no-daemon --stacktrace --info assembleDebug
 
-      - name: Upload debug APK artifact
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: debug-apk
           path: ${{ env.ANDROID_DIR }}/app/build/outputs/apk/debug/*.apk
@@ -85,53 +85,3 @@ jobs:
           from pathlib import Path
 
           path = Path("gradle.properties")
-          existing_lines = path.read_text().splitlines()
-          replacements = {
-              "MYAPP_RELEASE_STORE_FILE": "app/keystore.jks",
-              "MYAPP_RELEASE_STORE_PASSWORD": os.environ["ANDROID_KEYSTORE_PASSWORD"],
-              "MYAPP_RELEASE_KEY_ALIAS": os.environ["ANDROID_KEY_ALIAS"],
-              "MYAPP_RELEASE_KEY_PASSWORD": os.environ["ANDROID_KEY_PASSWORD"],
-          }
-
-          updated_lines = []
-          seen = set()
-          for line in existing_lines:
-              replaced = False
-              for key, value in replacements.items():
-                  if line.startswith(f"{key}="):
-                      updated_lines.append(f"{key}={value}")
-                      seen.add(key)
-                      replaced = True
-                      break
-              if not replaced:
-                  updated_lines.append(line)
-
-          for key, value in replacements.items():
-              if key not in seen:
-                  updated_lines.append(f"{key}={value}")
-
-          path.write_text("\n".join(updated_lines) + "\n")
-          PY
-
-      - name: Build signed release artifacts
-        if: env.HAS_ANDROID_SIGNING_SECRETS == 'true'
-        working-directory: ${{ env.ANDROID_DIR }}
-        run: ./gradlew assembleRelease bundleRelease --stacktrace --info
-
-      - name: Upload release artifacts
-        if: env.HAS_ANDROID_SIGNING_SECRETS == 'true'
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-artifacts
-          path: |
-            ${{ env.ANDROID_DIR }}/app/build/outputs/apk/release/*.apk
-            ${{ env.ANDROID_DIR }}/app/build/outputs/bundle/release/*.aab
-
-      - name: Report skipped release signing
-        if: env.HAS_ANDROID_SIGNING_SECRETS != 'true'
-        run: |
-          {
-            echo "## Android release signing skipped"
-            echo
-            echo "Debug APK was built successfully, but release signing secrets were not available."
-          } >> "$GITHUB_STEP_SUMMARY"
