@@ -407,7 +407,7 @@ function generateMockResponse(options: any): string {
 
   // 5. Check if Kotlin MainActivity / Compose is requested
   if (promptLower.includes("kotlin") || promptLower.includes("mainactivity.kt") || promptLower.includes("compose")) {
-    return `package com.drivelog
+    return `package com.example.aiapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -543,7 +543,7 @@ fun CyberBrutalistDashboard() {
 
   // 7. Check if Java file is requested
   if (promptLower.includes("java") || promptLower.includes("mainactivity.java")) {
-    return `package com.drivelog;
+    return `package com.example.aiapp;
 
 import android.os.Bundle;
 import android.view.View;
@@ -3792,7 +3792,7 @@ function getTemplateInfo(prompt: string, type: 'compose' | 'xml'): TemplateInfo 
     if (p.includes('login') || p.includes('auth') || p.includes('signin') || p.includes('signup') || p.includes('credential')) {
       return {
         name: 'login_app',
-        mainContent: `package com.drivelog
+        mainContent: `package com.example.aiapp
 
 import android.os.Bundle
 import android.widget.Toast
@@ -3887,7 +3887,7 @@ fun LoginAppScreen() {
     if (p.includes('map') || p.includes('coordinate') || p.includes('gps') || p.includes('location') || p.includes('track') || p.includes('route')) {
       return {
         name: 'maps_app',
-        mainContent: `package com.drivelog
+        mainContent: `package com.example.aiapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -3997,7 +3997,7 @@ fun MapsAppScreen() {
     if (p.includes('chat') || p.includes('agent') || p.includes('ai') || p.includes('assistant') || p.includes('bot') || p.includes('gemini') || p.includes('conversation')) {
       return {
         name: 'ai_chat_app',
-        mainContent: `package com.drivelog
+        mainContent: `package com.example.aiapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -4107,7 +4107,7 @@ fun ChatAppScreen() {
 
     return {
       name: 'basic_app',
-      mainContent: `package com.drivelog
+      mainContent: `package com.example.aiapp
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -4159,7 +4159,7 @@ fun MainAppScreen() {
     if (p.includes('login') || p.includes('auth') || p.includes('signin') || p.includes('signup') || p.includes('credential')) {
       return {
         name: 'login_app',
-        mainContent: `package com.drivelog;
+        mainContent: `package com.example.aiapp;
 
 import android.os.Bundle;
 import android.view.View;
@@ -4246,7 +4246,7 @@ public class MainActivity extends AppCompatActivity {
     if (p.includes('map') || p.includes('coordinate') || p.includes('gps') || p.includes('location') || p.includes('track') || p.includes('route')) {
       return {
         name: 'maps_app',
-        mainContent: `package com.drivelog;
+        mainContent: `package com.example.aiapp;
 
 import android.os.Bundle;
 import android.view.View;
@@ -4306,7 +4306,7 @@ public class MainActivity extends AppCompatActivity {
 
     return {
       name: 'basic_app',
-      mainContent: `package com.drivelog;
+      mainContent: `package com.example.aiapp;
 
 import android.os.Bundle;
 import android.view.View;
@@ -4398,7 +4398,7 @@ ${templateInfo.mainContent}
 Please adapt, extend, or fully customize this code to build what is requested in the prompt, but preserve the packages, imports, stable Jetpack Compose structure, and ensure there are absolutely no compile-time errors.
 Do NOT use unreferenced variables, resources, or layout components.
 Make sure:
-1. The package name is com.drivelog.
+1. The package name is com.example.aiapp.
 2. It includes the MainActivity class extending ComponentActivity and calls setContent { ... }.
 3. You implement the entire interactive UI inside this single Kotlin file using standard Material3 Compose components.
 4. Keep all imports clean.
@@ -4439,7 +4439,7 @@ ${templateInfo.mainContent}
 
 Please adapt this Java file to bind elements from the XML layout, handle click events, and execute logic for the user's prompt.
 Make sure:
-1. The package name is com.drivelog.
+1. The package name is com.example.aiapp.
 2. The activity extends AppCompatActivity and overrides onCreate, setting setContentView(R.layout.activity_main).
 3. Find elements by id and wire up click listeners to update UI or show Toasts.
 4. Output ONLY raw Java code. No markdown formatting, no explanations.`;
@@ -4478,7 +4478,7 @@ Make sure:
       path: 'App/src/main/AndroidManifest.xml',
       content: `<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.drivelog">
+    package="com.example.aiapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -4510,13 +4510,13 @@ Make sure:
 }
 
 android {
-    namespace = "com.drivelog"
-    compileSdk = 34
+    namespace = "com.example.aiapp"
+    compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.drivelog"
+        applicationId = "com.example.aiapp"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
     }
@@ -4538,7 +4538,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
 }
 
@@ -4546,7 +4546,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
-    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
+    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -4602,7 +4602,7 @@ include(":app")`,
       path: 'App/src/main/AndroidManifest.xml',
       content: `<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.drivelog">
+    package="com.example.aiapp">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -4631,13 +4631,13 @@ include(":app")`,
       content: `apply plugin: 'com.android.application'
 
 android {
-    namespace 'com.drivelog'
-    compileSdkVersion 34
+    namespace 'com.example.aiapp'
+    compileSdkVersion 36
 
     defaultConfig {
-        applicationId "com.drivelog"
+        applicationId "com.example.aiapp"
         minSdkVersion 26
-        targetSdkVersion 34
+        targetSdkVersion 36
         versionCode 1
         versionName "1.0"
     }
@@ -5147,7 +5147,7 @@ MUTATIONS & UPGRADES:
 ${upgradesPrompt}
 
 Rules:
-1. Ensure the package name remains com.drivelog.
+1. Ensure the package name remains com.example.aiapp.
 2. If Compose, output the complete MainActivity.kt extending ComponentActivity. Ensure excellent Material3 component layout design, using beautiful negative space, custom theme styles, elegant color schemes, clean shapes, and robust states.
 3. If XML/Java, output the complete MainActivity.java. Ensure click listeners and layout bindings are flawless.
 4. The output must be ready to compile immediately. No unreferenced resources or variables.
@@ -5340,7 +5340,7 @@ async function runJob(job: BuildJob) {
     Please adapt, extend, or fully customize this code to build what is requested in the prompt, but preserve the packages, imports, stable Jetpack Compose structure, and ensure there are absolutely no compile-time errors.
     Do NOT use unreferenced variables, resources, or layout components.
     Make sure:
-    1. The package name is com.drivelog.
+    1. The package name is com.example.aiapp.
     2. It includes the MainActivity class extending ComponentActivity and calls setContent { ... }.
     3. You implement the entire interactive UI inside this single Kotlin file using standard Material3 Compose components.
     4. Keep all imports clean.
@@ -5380,7 +5380,7 @@ async function runJob(job: BuildJob) {
 
     Please adapt this Java file to bind elements from the XML layout, handle click events, and execute logic for the user's prompt.
     Make sure:
-    1. The package name is com.drivelog.
+    1. The package name is com.example.aiapp.
     2. The activity extends AppCompatActivity and overrides onCreate, setting setContentView(R.layout.activity_main).
     3. Find elements by id and wire up click listeners to update UI or show Toasts.
     4. Output ONLY raw Java code. No markdown formatting, no explanations.`;
@@ -5420,7 +5420,7 @@ async function runJob(job: BuildJob) {
         path: 'App/src/main/AndroidManifest.xml',
         content: `<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.drivelog">
+    package="com.example.aiapp">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
@@ -5447,12 +5447,12 @@ async function runJob(job: BuildJob) {
     id("org.jetbrains.kotlin.android")
 }
 android {
-    namespace = "com.drivelog"
-    compileSdk = 34
+    namespace = "com.example.aiapp"
+    compileSdk = 36
     defaultConfig {
-        applicationId = "com.drivelog"
+        applicationId = "com.example.aiapp"
         minSdk = 26
-        targetSdk = 34
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
     }
@@ -5473,14 +5473,14 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.8"
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
 }
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
-    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
+    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -5529,7 +5529,7 @@ include(":app")`,
         path: 'App/src/main/AndroidManifest.xml',
         content: `<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.drivelog">
+    package="com.example.aiapp">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
@@ -5553,12 +5553,12 @@ include(":app")`,
         path: 'App/build.gradle',
         content: `apply plugin: 'com.android.application'
 android {
-    namespace 'com.drivelog'
-    compileSdkVersion 34
+    namespace 'com.example.aiapp'
+    compileSdkVersion 36
     defaultConfig {
-        applicationId "com.drivelog"
+        applicationId "com.example.aiapp"
         minSdkVersion 26
-        targetSdkVersion 34
+        targetSdkVersion 36
         versionCode 1
         versionName "1.0"
     }
@@ -6519,11 +6519,11 @@ app.post('/api/adb-command', (req, res) => {
     const ip = parts[2] || deviceIp || '192.168.1.100:5555';
     output = `connected to ${ip}`;
   } else if (command === 'adb logcat') {
-    output = `--------- beginning of main\nI/ActivityManager: Start proc com.drivelog for activity com.drivelog/.MainActivity\nD/dalvikvm: GC_CONCURRENT freed 2048K, 15% free 9200K/10800K\nI/System.out: [Mandela vs Matrix Re-Imaginator A to APK] Application initialized successfully.\nD/ViewRootImpl: ViewPostImeInputStage processPointer 0\nI/MainActivity: Compose screen state: count=0, theme=Dark`;
+    output = `--------- beginning of main\nI/ActivityManager: Start proc com.example.aiapp for activity com.example.aiapp/.MainActivity\nD/dalvikvm: GC_CONCURRENT freed 2048K, 15% free 9200K/10800K\nI/System.out: [Mandela vs Matrix Re-Imaginator A to APK] Application initialized successfully.\nD/ViewRootImpl: ViewPostImeInputStage processPointer 0\nI/MainActivity: Compose screen state: count=0, theme=Dark`;
   } else if (command.startsWith('adb install')) {
-    output = `Performing Streamed Install\nSuccess\nInstalled package: com.drivelog\nActivity started: com.drivelog/.MainActivity`;
+    output = `Performing Streamed Install\nSuccess\nInstalled package: com.example.aiapp\nActivity started: com.example.aiapp/.MainActivity`;
   } else if (command.startsWith('adb shell pm list packages')) {
-    output = `package:android\npackage:com.android.providers.telephony\npackage:com.google.android.youtube\npackage:com.drivelog\npackage:com.google.android.apps.maps`;
+    output = `package:android\npackage:com.android.providers.telephony\npackage:com.google.android.youtube\npackage:com.example.aiapp\npackage:com.google.android.apps.maps`;
   } else if (command.startsWith('adb shell screencap')) {
     output = `Screenshot successfully generated and saved. Pulling to host buffer... (2.4 MB)`;
   } else {
@@ -7364,8 +7364,8 @@ app.post('/api/builder/pre-apk-check', checkFrozen, (req, res) => {
 
   // Gate 3: target/compile SDK alignment
   const variablesPath = path.join(process.cwd(), 'android', 'variables.gradle');
-  let compileSdk = 34;
-  let targetSdk = 34;
+  let compileSdk = 36;
+  let targetSdk = 36;
   let minSdk = 24;
   let hasVariables = fs.existsSync(variablesPath);
   if (hasVariables) {

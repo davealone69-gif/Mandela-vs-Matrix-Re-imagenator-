@@ -979,7 +979,7 @@ export const CyberCrossTechDashboard: React.FC<CyberCrossTechDashboardProps> = (
                       </div>
                       <div className="p-2 bg-black border border-slate-900 rounded-lg">
                         <span className="text-slate-500 block">Assigned Sandbox:</span>
-                        <span className="font-mono text-white font-extrabold">com.drivelog.ai</span>
+                        <span className="font-mono text-white font-extrabold">com.mandelamatrix.reimaginator</span>
                       </div>
                     </div>
                   </div>
