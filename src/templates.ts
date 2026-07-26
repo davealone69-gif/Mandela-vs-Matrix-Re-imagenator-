@@ -1,11 +1,14 @@
 import { FileItem } from './types';
 
+/** Factory-generated app package — intentionally separate from host appId com.mandelamatrix.reimaginator */
+const GEN_PKG = 'com.example.aiapp';
+
 export const TEMPLATE_KOTLIN: FileItem[] = [
   {
     name: 'MainActivity.kt',
-    path: 'App/src/main/java/com/drivelog/MainActivity.kt',
+    path: `App/src/main/java/${GEN_PKG.replace(/\./g, '/')}/MainActivity.kt`,
     language: 'kotlin',
-    content: `package com.drivelog
+    content: `package ${GEN_PKG}
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -38,6 +41,8 @@ fun GreetingScreen() {
         Text(text = "Welcome to Mandela vs Matrix Re-Imaginator!", style = MaterialTheme.typography.headlineMedium)
         Spacer(modifier = Modifier.height(8.dp))
         Text(text = "Start building your Android app using Jetpack Compose.")
+        HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
+        Text(text = "Factory template v1A — Material3 BOM 2024.06.00")
     }
 }`
   },
@@ -46,12 +51,11 @@ fun GreetingScreen() {
     path: 'App/src/main/AndroidManifest.xml',
     language: 'xml',
     content: `<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.drivelog">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:allowBackup="true"
-        android:label="Mandela vs Matrix Re-Imaginator"
-        android:theme="@style/Theme.AppCompat.Light.NoActionBar">
+        android:label="Generated App"
+        android:theme="@android:style/Theme.Material.Light.NoActionBar">
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -64,104 +68,84 @@ fun GreetingScreen() {
 </manifest>`
   },
   {
-    name: 'build.gradle',
-    path: 'App/build.gradle',
-    language: 'groovy',
+    name: 'build.gradle.kts',
+    path: 'App/build.gradle.kts',
+    language: 'kotlin',
     content: `plugins {
-    id 'com.android.application'
-    id 'kotlin-android'
+    id("com.android.application")
+    id("org.jetbrains.kotlin.android")
 }
 
 android {
-    compileSdk 34
+    namespace = "${GEN_PKG}"
+    compileSdk = 36
+
     defaultConfig {
-        applicationId "com.drivelog"
-        minSdk 24
-        targetSdk 34
-        versionCode 1
-        versionName "1.0"
+        applicationId = "${GEN_PKG}"
+        minSdk = 26
+        targetSdk = 36
+        versionCode = 1
+        versionName = "1.0"
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions {
+        jvmTarget = "17"
+    }
+    buildFeatures {
+        compose = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.5.14"
     }
 }
 
 dependencies {
-    implementation 'androidx.core:core-ktx:1.12.0'
-    implementation 'androidx.compose.ui:ui:1.5.4'
-    implementation 'androidx.compose.material3:material3:1.1.2'
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.3")
+    implementation("androidx.activity:activity-compose:1.9.0")
+    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
+    implementation("androidx.compose.ui:ui")
+    implementation("androidx.compose.ui:ui-graphics")
+    implementation("androidx.compose.ui:ui-tooling-preview")
+    implementation("androidx.compose.material3:material3")
 }`
   },
   {
     name: 'README.md',
     path: 'README.md',
     language: 'markdown',
-    content: `# Mandela vs Matrix Re-Imaginator Workspace\n\nWelcome to your interactive Jetpack Compose development playground.\n\nUse the sidebar to explore files, write prompts, run simulations, or export your final build.`
+    content: `# Generated Android App\n\nBuilt by **Mandela vs Matrix Re-Imaginator** factory.\n\nPackage: \\`${GEN_PKG}\\` (host shell uses \\`com.mandelamatrix.reimaginator\\` — do not mix).\n\nCompose BOM: 2024.06.00 | compileSdk 36`
   }
 ];
 
 export const TEMPLATE_XML: FileItem[] = [
   {
-    name: 'MainActivity.kt',
-    path: 'App/src/main/java/com/drivelog/MainActivity.kt',
-    language: 'kotlin',
-    content: `package com.drivelog
+    name: 'MainActivity.java',
+    path: `App/src/main/java/${GEN_PKG.replace(/\./g, '/')}/MainActivity.java`,
+    language: 'java',
+    content: `package ${GEN_PKG};
 
-import android.content.Intent
-import android.os.Bundle
-import android.widget.Button
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.lifecycleScope
-import kotlinx.coroutines.launch
+import android.os.Bundle;
+import android.widget.Button;
+import android.widget.Toast;
+import androidx.appcompat.app.AppCompatActivity;
 
-class MainActivity : AppCompatActivity() {
-    
-    // Simulated API client
-    private val api = ApiClient()
+public class MainActivity extends AppCompatActivity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        val openAiButton = findViewById<Button>(R.id.open_ai)
-        openAiButton.setOnClickListener {
-            Toast.makeText(this, "Launching Builder AI Assistant...", Toast.LENGTH_SHORT).show()
-            
-            // Example 1: Launch via custom action intent
-            val actionIntent = Intent("com.drivelog.ACTION_OPEN_AI")
-            
-            // Example 2: Launch explicit class intent
-            val intent = Intent(this, AiAssistantActivity::class.java)
-            startActivity(intent)
+        Button openAiButton = findViewById(R.id.open_ai);
+        if (openAiButton != null) {
+            openAiButton.setOnClickListener(v ->
+                Toast.makeText(this, "Launching Builder AI Assistant...", Toast.LENGTH_SHORT).show()
+            );
         }
-
-        val openJobsButton = findViewById<Button>(R.id.open_jobs)
-        openJobsButton.setOnClickListener {
-            Toast.makeText(this, "Fetching active Builder Jobs...", Toast.LENGTH_SHORT).show()
-            
-            // Fetch jobs asynchronously inside lifecycleScope
-            lifecycleScope.launch {
-                try {
-                    val jobs = api.getJobs()   // GET /api/v1/jobs
-                    Toast.makeText(this@MainActivity, "Loaded \${jobs.size} active jobs!", Toast.LENGTH_SHORT).show()
-                } catch (e: Exception) {
-                    Toast.makeText(this@MainActivity, "Failed to load jobs", Toast.LENGTH_SHORT).show()
-                }
-            }
-        }
-    }
-}
-
-// Simulated network model
-class ApiClient {
-    suspend fun getJobs(): List<String> {
-        kotlinx.coroutines.delay(1000)
-        return listOf("Android Developer", "AI Engineer", "Kotlin Expert")
-    }
-}
-
-class AiAssistantActivity : AppCompatActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Toast.makeText(this, "Welcome to Builder AI Assistant Screen!", Toast.LENGTH_SHORT).show()
     }
 }`
   },
@@ -192,15 +176,6 @@ class AiAssistantActivity : AppCompatActivity() {
         android:text="Open AI"
         android:layout_below="@id/title"
         android:layout_marginTop="30dp" />
-
-    <Button
-        android:id="@+id/open_jobs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Builder Jobs"
-        android:layout_below="@id/open_ai"
-        android:layout_marginTop="20dp" />
-
 </RelativeLayout>`
   },
   {
@@ -208,11 +183,10 @@ class AiAssistantActivity : AppCompatActivity() {
     path: 'App/src/main/AndroidManifest.xml',
     language: 'xml',
     content: `<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.drivelog">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
         android:allowBackup="true"
-        android:label="Mandela vs Matrix Re-Imaginator"
+        android:label="Generated App"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
             android:name=".MainActivity"
@@ -231,18 +205,27 @@ class AiAssistantActivity : AppCompatActivity() {
     language: 'groovy',
     content: `plugins {
     id 'com.android.application'
-    id 'kotlin-android'
 }
 
 android {
-    compileSdk 34
+    namespace '${GEN_PKG}'
+    compileSdk 36
     defaultConfig {
-        applicationId "com.drivelog"
-        minSdk 24
-        targetSdk 34
+        applicationId "${GEN_PKG}"
+        minSdk 26
+        targetSdk 36
         versionCode 1
         versionName "1.0"
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    implementation 'androidx.appcompat:appcompat:1.7.0'
+    implementation 'com.google.android.material:material:1.12.0'
 }`
   }
 ];
