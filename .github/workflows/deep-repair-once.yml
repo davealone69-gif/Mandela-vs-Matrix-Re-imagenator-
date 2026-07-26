@@ -2,9 +2,6 @@ name: Deep Repair Once
 
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - 'scripts/repair_all.cjs'
 
 permissions:
   contents: write
