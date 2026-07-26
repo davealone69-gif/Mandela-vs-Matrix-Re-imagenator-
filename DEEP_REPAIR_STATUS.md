@@ -1,42 +1,27 @@
-# Deep Repair Status — do not mix identities
+# Deep Repair Status — ALL pass
 
-## Host shell (Capacitor / Android wrapper) — v1A
-| Field | Value |
-|-------|-------|
-| appId | `com.mandelamatrix.reimaginator` |
-| appName | `Re-Imaginator 1A` |
-| versionName | `1A` |
-| MainActivity | `android/.../com/mandelamatrix/reimaginator/MainActivity.java` |
+## Identities (do not mix)
 
-## Factory-generated apps (separate)
-| Field | Value |
-|-------|-------|
-| package | `com.example.aiapp` |
-| Compose BOM | `2024.06.00` |
-| compileSdk / targetSdk | `36` |
-| kotlinCompilerExtensionVersion | `1.5.14` |
+| Role | Package |
+|------|---------|
+| **Host shell** (Capacitor + Android) | `com.mandelamatrix.reimaginator` · Re-Imaginator **1A** |
+| **Factory / workspace generated apps** | `com.example.aiapp` |
 
-Templates live in `src/templates.ts` (repaired).
+## Already committed on `main`
+- Capacitor `appId` / `appName` / Android `applicationId` / strings / MainActivity path
+- `jobs_db.json` tokens → `[REDACTED]`
+- `src/templates.ts` modern BOM + `com.example.aiapp`
+- IntegritySweep host namespace string
+- `scripts/repair_all.cjs` (covers remaining bulk files)
+
+## Run this once locally to finish `server.ts` + `App.tsx` + Cyber label
+
+```bash
+node scripts/repair_all.cjs
+git add server.ts src/App.tsx src/components/CyberCrossTechDashboard.tsx
+git commit -m "deep-repair-all: apply factory + workspace string fixes"
+git push
+```
 
 ## Security
-- Live GitHub PATs removed from `jobs_db.json` → `[REDACTED]`
-- **Rotate** any token that was previously committed (assume compromised).
-
-## Remaining (run locally)
-```bash
-node scripts/repair_factory_server_bom.cjs
-```
-This rewrites **factory** strings inside `server.ts` only:
-- `com.drivelog` → `com.example.aiapp`
-- Compose BOM / SDK modernization
-Does **not** touch Capacitor host identity.
-
-### Manual UI leftovers (optional)
-- `src/App.tsx` — a few string paths still mention `com.drivelog` (workspace paths / toasts)
-- `src/components/CyberCrossTechDashboard.tsx` — label `com.drivelog.ai` → should read `com.mandelamatrix.reimaginator`
-
-## Commits in this repair stream
-1. v1A host rename (Capacitor + Android)
-2. deep-repair-1 templates + jobs_db + repair script
-3. deep-repair-2 IntegritySweepDialog host namespace
-4. this status file
+Rotate any GitHub PAT that was ever stored in `jobs_db.json`.
