@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <resources>
-    <string name="app_name">DriveLog</string>
-    <string name="title_activity_main">DriveLog</string>
-    <string name="package_name">com.drivelog</string>
-    <string name="custom_url_scheme">com.drivelog</string>
+    <string name="app_name">Re-Imaginator 1A</string>
+    <string name="title_activity_main">Re-Imaginator 1A</string>
+    <string name="package_name">com.mandelamatrix.reimaginator</string>
+    <string name="custom_url_scheme">com.mandelamatrix.reimaginator</string>
 </resources>
