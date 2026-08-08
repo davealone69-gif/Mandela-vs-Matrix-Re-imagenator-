@@ -72,6 +72,33 @@ jobs:
             echo "keytool not available on runner; skipping keystore verification"
           fi
 
+      - name: Fix gradle-wrapper.jar
+        run: |
+          set -e
+          mkdir -p android/gradle/wrapper
+          # Committed jar is corrupt; always fetch a clean official wrapper JAR
+          echo "Downloading clean gradle-wrapper.jar..."
+          curl -fsSL -o android/gradle/wrapper/gradle-wrapper.jar \
+            "https://raw.githubusercontent.com/gradle/gradle/v8.14.3/gradle/wrapper/gradle-wrapper.jar"
+          # Sanity check: must be a valid ZIP/JAR and reasonably sized
+          python3 - <<'PY'
+          import zipfile, sys, os
+          path = "android/gradle/wrapper/gradle-wrapper.jar"
+          size = os.path.getsize(path)
+          if size < 20000:
+              print(f"ERROR: gradle-wrapper.jar too small ({size} bytes)")
+              sys.exit(1)
+          with zipfile.ZipFile(path, "r") as z:
+              names = z.namelist()
+              if not any(n.endswith("GradleWrapperMain.class") or "org/gradle/wrapper" in n for n in names):
+                  # Still accept if it's a valid zip with META-INF
+                  if "META-INF/MANIFEST.MF" not in names:
+                      print("ERROR: gradle-wrapper.jar does not look like a valid wrapper jar")
+                      sys.exit(1)
+          print(f"OK: gradle-wrapper.jar is valid ({size} bytes)")
+          PY
+          ls -lh android/gradle/wrapper/gradle-wrapper.jar
+
       - name: Build Android APK
         run: |
           cd android
