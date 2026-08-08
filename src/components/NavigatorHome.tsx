@@ -37,6 +37,9 @@ import {
   Zap,
   Info,
   ServerCog,
+  Network,
+  Ghost,
+  Folder,
   PlaySquare,
   Trash2,
   Search,
@@ -1689,6 +1692,48 @@ export const NavigatorHome: React.FC<NavigatorHomeProps> = ({
                 >
                   <span>🧠 Closed-Circuit Autonomous Learning Loop</span>
                   <Brain className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+                </button>
+                <button
+                  onClick={() => setActiveDialog('highThroughputStorage')}
+                  className="p-3 bg-gradient-to-r from-amber-950/50 to-emerald-950/50 border border-amber-800 hover:border-amber-700 text-[10px] font-black rounded-lg text-left text-amber-400 flex items-center justify-between cursor-pointer"
+                >
+                  <span>⚡ High-Throughput 100 GB/s Storage Engine (WEKA / VAST / DDN)</span>
+                  <ServerCog className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                </button>
+                <button
+                  onClick={() => setActiveDialog('distributedHiveOrganism')}
+                  className="p-3 bg-gradient-to-r from-red-950/60 via-amber-950/60 to-purple-950/60 border border-amber-600 hover:border-amber-500 text-[10px] font-black rounded-lg text-left text-amber-300 flex items-center justify-between cursor-pointer"
+                >
+                  <span>🐝 Death Hive: Distributed Intelligence Colony Organism</span>
+                  <Network className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
+                </button>
+                <button
+                  onClick={() => setActiveDialog('emergentGhosts')}
+                  className="p-3 bg-gradient-to-r from-purple-950/70 via-slate-950/70 to-cyan-950/70 border border-purple-500 hover:border-purple-400 text-[10px] font-black rounded-lg text-left text-purple-300 flex items-center justify-between cursor-pointer"
+                >
+                  <span>🜁 Emergent Ghosts vs Police Containment Architectures</span>
+                  <Ghost className="w-3.5 h-3.5 text-purple-400 animate-pulse" />
+                </button>
+                <button
+                  onClick={() => setActiveDialog('moduleOne')}
+                  className="p-3 bg-gradient-to-r from-emerald-950/70 via-slate-950/70 to-cyan-950/70 border border-emerald-500 hover:border-emerald-400 text-[10px] font-black rounded-lg text-left text-emerald-300 flex items-center justify-between cursor-pointer"
+                >
+                  <span>📁 Module_1: Mandela / Matrix / Integration Pipeline</span>
+                  <Folder className="w-3.5 h-3.5 text-emerald-400 animate-pulse" />
+                </button>
+                <button
+                  onClick={() => setActiveDialog('moduleTwo')}
+                  className="p-3 bg-gradient-to-r from-indigo-950/70 via-slate-950/70 to-blue-950/70 border border-indigo-500 hover:border-indigo-400 text-[10px] font-black rounded-lg text-left text-indigo-300 flex items-center justify-between cursor-pointer"
+                >
+                  <span>🏷️ Module_2: Evaluateor / Action Classification Engine</span>
+                  <Folder className="w-3.5 h-3.5 text-indigo-400 animate-pulse" />
+                </button>
+                <button
+                  onClick={() => setActiveDialog('moduleThree')}
+                  className="p-3 bg-gradient-to-r from-amber-950/70 via-slate-950/70 to-orange-950/70 border border-amber-500 hover:border-amber-400 text-[10px] font-black rounded-lg text-left text-amber-300 flex items-center justify-between cursor-pointer"
+                >
+                  <span>🛠️ Module_3: Devator / System-Change Executor Engine</span>
+                  <Folder className="w-3.5 h-3.5 text-amber-400 animate-pulse" />
                 </button>
               </div>
             </section>

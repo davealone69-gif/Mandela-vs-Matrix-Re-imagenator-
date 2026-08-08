@@ -1,4 +1,4 @@
-package com.mandelamatrix.reimaginator;
+package com.drivelog;
 
 import com.getcapacitor.BridgeActivity;
 

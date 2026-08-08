@@ -58,6 +58,12 @@ import AIOptimizerAndWowSuiteDialog from './components/AIOptimizerAndWowSuiteDia
 import DecentralizedSwarmSimulatorDialog from './components/DecentralizedSwarmSimulatorDialog';
 import RundownManagerDialog from './components/RundownManagerDialog';
 import ClosedCircuitLearningDashboard from './components/ClosedCircuitLearningDashboard';
+import HighThroughputStorageEngineDialog from './components/HighThroughputStorageEngineDialog';
+import DistributedHiveOrganismDialog from './components/DistributedHiveOrganismDialog';
+import EmergentGhostSystemDialog from './components/EmergentGhostSystemDialog';
+import ModuleOneIntegrationDialog from './components/ModuleOneIntegrationDialog';
+import ModuleTwoIntegrationDialog from './components/ModuleTwoIntegrationDialog';
+import ModuleThreeIntegrationDialog from './components/ModuleThreeIntegrationDialog';
 
 import { NavigatorHome } from './components/NavigatorHome';
 import { CopilotPage, EmulatorPage, ConsolePage } from './components/SecondaryPages';
@@ -147,7 +153,7 @@ export default function App() {
         !cachedActive.includes('com/yourdomain/platform') &&
         !cachedActive.includes('com/davealone69') &&
         !cachedActive.includes('Mandela vs Matrix Re-Imaginator')) return cachedActive;
-    return 'App/src/main/java/com/example/aiapp/MainActivity.kt';
+    return 'App/src/main/java/com/drivelog/MainActivity.kt';
   });
 
   const [openTabs, setOpenTabs] = useState<string[]>(() => {
@@ -167,7 +173,7 @@ export default function App() {
         }
       } catch (e) {}
     }
-    return ['App/src/main/java/com/example/aiapp/MainActivity.kt'];
+    return ['App/src/main/java/com/drivelog/MainActivity.kt'];
   });
 
   const [editorContent, setEditorContent] = useState<string>('');
@@ -738,7 +744,7 @@ export default function App() {
     const upgraded = localStorage.getItem('Mandela vs Matrix Re-Imaginator_hydration_upgraded');
     if (upgraded === 'true') {
       setTimeout(() => {
-        triggerToast('🔒 Ghost File & Hydration Protection: Legacy workspace detected and purged. Aligned to com.example.aiapp (factory workspace).');
+        triggerToast('🔒 Ghost File & Hydration Protection: Legacy workspace detected and purged. Aligned to com.drivelog.');
         localStorage.removeItem('Mandela vs Matrix Re-Imaginator_hydration_upgraded');
       }, 1000);
     }
@@ -793,7 +799,7 @@ export default function App() {
             updated = true;
             return {
               ...f,
-              content: `package com.example.aiapp
+              content: `package com.drivelog
 
 import android.content.Intent
 import android.os.Bundle
@@ -817,7 +823,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Launching Builder AI Assistant...", Toast.LENGTH_SHORT).show()
             
             // Example 1: Launch via custom action intent
-            val actionIntent = Intent("com.example.aiapp.ACTION_OPEN_AI")
+            val actionIntent = Intent("com.drivelog.ACTION_OPEN_AI")
             
             // Example 2: Launch explicit class intent
             val intent = Intent(this, AiAssistantActivity::class.java)
@@ -1374,7 +1380,7 @@ class AiAssistantActivity : AppCompatActivity() {
     setProjectType(type);
     const newTemplates = type === 'compose' ? TEMPLATE_KOTLIN : TEMPLATE_XML;
     const defaultPath = type === 'compose'
-      ? 'App/src/main/java/com/example/aiapp/MainActivity.kt'
+      ? 'App/src/main/java/com/drivelog/MainActivity.kt'
       : 'App/src/main/res/layout/activity_main.xml';
 
     setFiles(newTemplates);
@@ -1462,7 +1468,7 @@ class AiAssistantActivity : AppCompatActivity() {
       name,
       path,
       language,
-      content: `package com.example.aiapp\n\n// Added source file: ${name}\nclass ${name.split('.')[0]} {\n    // Write your Android logic here\n}`
+      content: `package com.drivelog\n\n// Added source file: ${name}\nclass ${name.split('.')[0]} {\n    // Write your Android logic here\n}`
     };
 
     setFiles(prev => [...prev, newFile]);
@@ -1765,7 +1771,7 @@ class AiAssistantActivity : AppCompatActivity() {
           text: openAiBtnText ? openAiBtnText[1] : 'Open AI',
           onClick: () => {
             triggerToast('Launching Builder AI Assistant...');
-            triggerLogcat('MainActivity', 'I/MainActivity: Intent started: com.example.aiapp.ACTION_OPEN_AI');
+            triggerLogcat('MainActivity', 'I/MainActivity: Intent started: com.drivelog.ACTION_OPEN_AI');
           }
         });
 
@@ -1860,7 +1866,7 @@ class AiAssistantActivity : AppCompatActivity() {
 
   const injectCrashEvent = () => {
     triggerLogcat('AndroidRuntime', 'FATAL EXCEPTION: main', 'E');
-    triggerLogcat('AndroidRuntime', 'Process: com.example.aiapp, PID: 12584', 'E');
+    triggerLogcat('AndroidRuntime', 'Process: com.drivelog, PID: 12584', 'E');
     triggerLogcat('AndroidRuntime', 'java.lang.NullPointerException: Attempt to invoke virtual method on a null object reference', 'E');
     setConsoleTab('logcat');
     triggerToast('Fatal NullPointerException Crash simulated!');
@@ -1906,12 +1912,12 @@ class AiAssistantActivity : AppCompatActivity() {
       if (data.success) {
         setBuildLogs(prev => [
           ...prev,
-          `Success. Started: com.example.aiapp/.MainActivity`,
+          `Success. Started: com.drivelog/.MainActivity`,
           `BUILD SUCCESSFUL`
         ]);
         setBuildErrorLines([]);
         triggerToast('Hot-loaded onto Connected Emulator!');
-        triggerLogcat('ActivityManager', 'Restarting activity com.example.aiapp/.MainActivity');
+        triggerLogcat('ActivityManager', 'Restarting activity com.drivelog/.MainActivity');
         setCurrentPage('emulator');
       } else {
         setBuildLogs(prev => [...prev, `Build failed. Sync cancelled.`]);
@@ -1944,7 +1950,7 @@ class AiAssistantActivity : AppCompatActivity() {
 
       if (cleanUri.includes('downloads') || authority.includes('downloads')) {
         providerName = 'DownloadsProvider (com.android.providers.downloads)';
-        displayName = 'ReImaginator_Core_SDK_v3.zip';
+        displayName = 'DriveLog_Core_SDK_v3.zip';
         mimeType = 'application/zip';
         size = 24576000; // 24.5 MB
         physicalPath += `Download/${displayName}`;
@@ -1954,7 +1960,7 @@ class AiAssistantActivity : AppCompatActivity() {
           { name: '_size', value: size.toLocaleString() + ' bytes', type: 'INTEGER' },
           { name: 'mime_type', value: mimeType, type: 'TEXT' },
           { name: '_data', value: physicalPath, type: 'TEXT' },
-          { name: 'title', value: 'Re-Imaginator Core SDK', type: 'TEXT' },
+          { name: 'title', value: 'DriveLog Core SDK', type: 'TEXT' },
           { name: 'description', value: 'Android Local SDK package downloaded from repository', type: 'TEXT' },
           { name: 'status', value: '200 (STATUS_SUCCESSFUL)', type: 'INTEGER' },
           { name: 'last_modified_timestamp', value: '1783374237000 (2026-07-13)', type: 'INTEGER' },
@@ -2653,6 +2659,12 @@ class AiAssistantActivity : AppCompatActivity() {
       {activeDialog === 'decentralizedSwarm' && <DecentralizedSwarmSimulatorDialog isDark={isDark} onClose={() => setActiveDialog(null)} />}
       {activeDialog === 'rundownManager' && <RundownManagerDialog isDark={isDark} onClose={() => setActiveDialog(null)} />}
       {activeDialog === 'closedLearningLoop' && <ClosedCircuitLearningDashboard isDark={isDark} onClose={() => setActiveDialog(null)} />}
+      {activeDialog === 'highThroughputStorage' && <HighThroughputStorageEngineDialog isDark={isDark} onClose={() => setActiveDialog(null)} />}
+      {activeDialog === 'distributedHiveOrganism' && <DistributedHiveOrganismDialog isDark={isDark} onClose={() => setActiveDialog(null)} />}
+      {activeDialog === 'emergentGhosts' && <EmergentGhostSystemDialog isDark={isDark} onClose={() => setActiveDialog(null)} />}
+      {activeDialog === 'moduleOne' && <ModuleOneIntegrationDialog isDark={isDark} onClose={() => setActiveDialog(null)} />}
+      {activeDialog === 'moduleTwo' && <ModuleTwoIntegrationDialog isDark={isDark} onClose={() => setActiveDialog(null)} />}
+      {activeDialog === 'moduleThree' && <ModuleThreeIntegrationDialog isDark={isDark} onClose={() => setActiveDialog(null)} />}
       {activeDialog === 'mythicCodex' && (
         <MythicIntelligenceCodexDialog
           isDark={isDark}
@@ -5175,7 +5187,7 @@ class AiAssistantActivity : AppCompatActivity() {
                           'content://media/external/downloads/1000132003',
                           'content://media/external/images/media/42150',
                           'content://com.android.contacts/contacts/7',
-                          'content://com.example.aiapp.provider/trips/active'
+                          'content://com.drivelog.provider/trips/active'
                         ].map((preset) => (
                           <button
                             key={preset}
@@ -5258,7 +5270,7 @@ context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
     if (cursor.moveToFirst()) {
         val id = cursor.getLong(idCol)
         val name = cursor.getString(nameCol)
-        Log.d("AiAppResolver", "Resolved record ID: \$id, Name: \$name")
+        Log.d("DriveLogResolver", "Resolved record ID: \$id, Name: \$name")
     }
 }`}
                                   </code>

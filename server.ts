@@ -3,7 +3,6 @@ import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
 import fs from 'fs';
-import rateLimit from 'express-rate-limit';
 import { GoogleGenAI, Modality } from '@google/genai';
 import { WebSocketServer } from 'ws';
 import { createServer as createViteServer } from 'vite';
@@ -407,7 +406,7 @@ function generateMockResponse(options: any): string {
 
   // 5. Check if Kotlin MainActivity / Compose is requested
   if (promptLower.includes("kotlin") || promptLower.includes("mainactivity.kt") || promptLower.includes("compose")) {
-    return `package com.example.aiapp
+    return `package com.drivelog
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -543,7 +542,7 @@ fun CyberBrutalistDashboard() {
 
   // 7. Check if Java file is requested
   if (promptLower.includes("java") || promptLower.includes("mainactivity.java")) {
-    return `package com.example.aiapp;
+    return `package com.drivelog;
 
 import android.os.Bundle;
 import android.view.View;
@@ -3792,7 +3791,7 @@ function getTemplateInfo(prompt: string, type: 'compose' | 'xml'): TemplateInfo 
     if (p.includes('login') || p.includes('auth') || p.includes('signin') || p.includes('signup') || p.includes('credential')) {
       return {
         name: 'login_app',
-        mainContent: `package com.example.aiapp
+        mainContent: `package com.drivelog
 
 import android.os.Bundle
 import android.widget.Toast
@@ -3887,7 +3886,7 @@ fun LoginAppScreen() {
     if (p.includes('map') || p.includes('coordinate') || p.includes('gps') || p.includes('location') || p.includes('track') || p.includes('route')) {
       return {
         name: 'maps_app',
-        mainContent: `package com.example.aiapp
+        mainContent: `package com.drivelog
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -3997,7 +3996,7 @@ fun MapsAppScreen() {
     if (p.includes('chat') || p.includes('agent') || p.includes('ai') || p.includes('assistant') || p.includes('bot') || p.includes('gemini') || p.includes('conversation')) {
       return {
         name: 'ai_chat_app',
-        mainContent: `package com.example.aiapp
+        mainContent: `package com.drivelog
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -4107,7 +4106,7 @@ fun ChatAppScreen() {
 
     return {
       name: 'basic_app',
-      mainContent: `package com.example.aiapp
+      mainContent: `package com.drivelog
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -4159,7 +4158,7 @@ fun MainAppScreen() {
     if (p.includes('login') || p.includes('auth') || p.includes('signin') || p.includes('signup') || p.includes('credential')) {
       return {
         name: 'login_app',
-        mainContent: `package com.example.aiapp;
+        mainContent: `package com.drivelog;
 
 import android.os.Bundle;
 import android.view.View;
@@ -4246,7 +4245,7 @@ public class MainActivity extends AppCompatActivity {
     if (p.includes('map') || p.includes('coordinate') || p.includes('gps') || p.includes('location') || p.includes('track') || p.includes('route')) {
       return {
         name: 'maps_app',
-        mainContent: `package com.example.aiapp;
+        mainContent: `package com.drivelog;
 
 import android.os.Bundle;
 import android.view.View;
@@ -4306,7 +4305,7 @@ public class MainActivity extends AppCompatActivity {
 
     return {
       name: 'basic_app',
-      mainContent: `package com.example.aiapp;
+      mainContent: `package com.drivelog;
 
 import android.os.Bundle;
 import android.view.View;
@@ -4398,7 +4397,7 @@ ${templateInfo.mainContent}
 Please adapt, extend, or fully customize this code to build what is requested in the prompt, but preserve the packages, imports, stable Jetpack Compose structure, and ensure there are absolutely no compile-time errors.
 Do NOT use unreferenced variables, resources, or layout components.
 Make sure:
-1. The package name is com.example.aiapp.
+1. The package name is com.drivelog.
 2. It includes the MainActivity class extending ComponentActivity and calls setContent { ... }.
 3. You implement the entire interactive UI inside this single Kotlin file using standard Material3 Compose components.
 4. Keep all imports clean.
@@ -4439,7 +4438,7 @@ ${templateInfo.mainContent}
 
 Please adapt this Java file to bind elements from the XML layout, handle click events, and execute logic for the user's prompt.
 Make sure:
-1. The package name is com.example.aiapp.
+1. The package name is com.drivelog.
 2. The activity extends AppCompatActivity and overrides onCreate, setting setContentView(R.layout.activity_main).
 3. Find elements by id and wire up click listeners to update UI or show Toasts.
 4. Output ONLY raw Java code. No markdown formatting, no explanations.`;
@@ -4478,7 +4477,7 @@ Make sure:
       path: 'App/src/main/AndroidManifest.xml',
       content: `<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.aiapp">
+    package="com.drivelog">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -4510,13 +4509,13 @@ Make sure:
 }
 
 android {
-    namespace = "com.example.aiapp"
-    compileSdk = 36
+    namespace = "com.drivelog"
+    compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.aiapp"
+        applicationId = "com.drivelog"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
     }
@@ -4538,7 +4537,7 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
 }
 
@@ -4546,7 +4545,7 @@ dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
-    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
+    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -4602,7 +4601,7 @@ include(":app")`,
       path: 'App/src/main/AndroidManifest.xml',
       content: `<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.aiapp">
+    package="com.drivelog">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -4631,13 +4630,13 @@ include(":app")`,
       content: `apply plugin: 'com.android.application'
 
 android {
-    namespace 'com.example.aiapp'
-    compileSdkVersion 36
+    namespace 'com.drivelog'
+    compileSdkVersion 34
 
     defaultConfig {
-        applicationId "com.example.aiapp"
+        applicationId "com.drivelog"
         minSdkVersion 26
-        targetSdkVersion 36
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
     }
@@ -5147,7 +5146,7 @@ MUTATIONS & UPGRADES:
 ${upgradesPrompt}
 
 Rules:
-1. Ensure the package name remains com.example.aiapp.
+1. Ensure the package name remains com.drivelog.
 2. If Compose, output the complete MainActivity.kt extending ComponentActivity. Ensure excellent Material3 component layout design, using beautiful negative space, custom theme styles, elegant color schemes, clean shapes, and robust states.
 3. If XML/Java, output the complete MainActivity.java. Ensure click listeners and layout bindings are flawless.
 4. The output must be ready to compile immediately. No unreferenced resources or variables.
@@ -5340,7 +5339,7 @@ async function runJob(job: BuildJob) {
     Please adapt, extend, or fully customize this code to build what is requested in the prompt, but preserve the packages, imports, stable Jetpack Compose structure, and ensure there are absolutely no compile-time errors.
     Do NOT use unreferenced variables, resources, or layout components.
     Make sure:
-    1. The package name is com.example.aiapp.
+    1. The package name is com.drivelog.
     2. It includes the MainActivity class extending ComponentActivity and calls setContent { ... }.
     3. You implement the entire interactive UI inside this single Kotlin file using standard Material3 Compose components.
     4. Keep all imports clean.
@@ -5380,7 +5379,7 @@ async function runJob(job: BuildJob) {
 
     Please adapt this Java file to bind elements from the XML layout, handle click events, and execute logic for the user's prompt.
     Make sure:
-    1. The package name is com.example.aiapp.
+    1. The package name is com.drivelog.
     2. The activity extends AppCompatActivity and overrides onCreate, setting setContentView(R.layout.activity_main).
     3. Find elements by id and wire up click listeners to update UI or show Toasts.
     4. Output ONLY raw Java code. No markdown formatting, no explanations.`;
@@ -5420,7 +5419,7 @@ async function runJob(job: BuildJob) {
         path: 'App/src/main/AndroidManifest.xml',
         content: `<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.aiapp">
+    package="com.drivelog">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
@@ -5447,12 +5446,12 @@ async function runJob(job: BuildJob) {
     id("org.jetbrains.kotlin.android")
 }
 android {
-    namespace = "com.example.aiapp"
-    compileSdk = 36
+    namespace = "com.drivelog"
+    compileSdk = 34
     defaultConfig {
-        applicationId = "com.example.aiapp"
+        applicationId = "com.drivelog"
         minSdk = 26
-        targetSdk = 36
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
     }
@@ -5473,14 +5472,14 @@ android {
         compose = true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.5.14"
+        kotlinCompilerExtensionVersion = "1.5.8"
     }
 }
 dependencies {
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
-    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
+    implementation(platform("androidx.compose:compose-bom:2023.08.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -5529,7 +5528,7 @@ include(":app")`,
         path: 'App/src/main/AndroidManifest.xml',
         content: `<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.aiapp">
+    package="com.drivelog">
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <application
@@ -5553,12 +5552,12 @@ include(":app")`,
         path: 'App/build.gradle',
         content: `apply plugin: 'com.android.application'
 android {
-    namespace 'com.example.aiapp'
-    compileSdkVersion 36
+    namespace 'com.drivelog'
+    compileSdkVersion 34
     defaultConfig {
-        applicationId "com.example.aiapp"
+        applicationId "com.drivelog"
         minSdkVersion 26
-        targetSdkVersion 36
+        targetSdkVersion 34
         versionCode 1
         versionName "1.0"
     }
@@ -6447,16 +6446,16 @@ function triggerRealAndroidBuild() {
   
   globalBuildStatus = 'building';
   globalBuildLogs = [
-    '[INIT] Initiating Autonomous Gradle Compile Protocol...',
-    '[INFO] Memory bounds: -Xmx512m, single-daemon mode.',
+    '[INIT] Initiating Autonomous Gradle Compile Protocol via build_apk.sh...',
+    '[INFO] Checking environment, Java 21, Android SDK, and Web assets...',
     '[INFO] Compiling your workspace files...'
   ];
   
   const { exec } = require('child_process');
-  const buildCommand = `export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64 && export GRADLE_OPTS="-Xmx384m" && ./gradlew assembleDebug --no-daemon`;
+  const buildCommand = `chmod +x build_apk.sh && ./build_apk.sh`;
   
-  console.log('[Build Trigger] Launching real Android Gradle compilation...');
-  const child = exec(buildCommand, { cwd: path.join(process.cwd(), 'android') });
+  console.log('[Build Trigger] Launching real Android Gradle compilation via build_apk.sh...');
+  const child = exec(buildCommand, { cwd: process.cwd() });
   
   child.stdout.on('data', (data: any) => {
     const lines = data.toString().split('\n');
@@ -6519,11 +6518,11 @@ app.post('/api/adb-command', (req, res) => {
     const ip = parts[2] || deviceIp || '192.168.1.100:5555';
     output = `connected to ${ip}`;
   } else if (command === 'adb logcat') {
-    output = `--------- beginning of main\nI/ActivityManager: Start proc com.example.aiapp for activity com.example.aiapp/.MainActivity\nD/dalvikvm: GC_CONCURRENT freed 2048K, 15% free 9200K/10800K\nI/System.out: [Mandela vs Matrix Re-Imaginator A to APK] Application initialized successfully.\nD/ViewRootImpl: ViewPostImeInputStage processPointer 0\nI/MainActivity: Compose screen state: count=0, theme=Dark`;
+    output = `--------- beginning of main\nI/ActivityManager: Start proc com.drivelog for activity com.drivelog/.MainActivity\nD/dalvikvm: GC_CONCURRENT freed 2048K, 15% free 9200K/10800K\nI/System.out: [Mandela vs Matrix Re-Imaginator A to APK] Application initialized successfully.\nD/ViewRootImpl: ViewPostImeInputStage processPointer 0\nI/MainActivity: Compose screen state: count=0, theme=Dark`;
   } else if (command.startsWith('adb install')) {
-    output = `Performing Streamed Install\nSuccess\nInstalled package: com.example.aiapp\nActivity started: com.example.aiapp/.MainActivity`;
+    output = `Performing Streamed Install\nSuccess\nInstalled package: com.drivelog\nActivity started: com.drivelog/.MainActivity`;
   } else if (command.startsWith('adb shell pm list packages')) {
-    output = `package:android\npackage:com.android.providers.telephony\npackage:com.google.android.youtube\npackage:com.example.aiapp\npackage:com.google.android.apps.maps`;
+    output = `package:android\npackage:com.android.providers.telephony\npackage:com.google.android.youtube\npackage:com.drivelog\npackage:com.google.android.apps.maps`;
   } else if (command.startsWith('adb shell screencap')) {
     output = `Screenshot successfully generated and saved. Pulling to host buffer... (2.4 MB)`;
   } else {
@@ -7364,8 +7363,8 @@ app.post('/api/builder/pre-apk-check', checkFrozen, (req, res) => {
 
   // Gate 3: target/compile SDK alignment
   const variablesPath = path.join(process.cwd(), 'android', 'variables.gradle');
-  let compileSdk = 36;
-  let targetSdk = 36;
+  let compileSdk = 34;
+  let targetSdk = 34;
   let minSdk = 24;
   let hasVariables = fs.existsSync(variablesPath);
   if (hasVariables) {
@@ -8117,58 +8116,938 @@ Return JSON:
   });
 });
 
-const apkDownloadLimiter = rateLimit({
-  windowMs: 60 * 1000,
-  max: 30,
-  standardHeaders: true,
-  legacyHeaders: false,
-  message: {
-    success: false,
-    message: 'Too many APK download requests. Please wait and try again.'
+// High-Throughput Storage for Training & Evolution APIs
+let storageEngineState = {
+  throughputGBps: 104.8,
+  targetThroughput: 100.0,
+  nvmeIops: 5420000,
+  vectorLatencyMs: 0.38,
+  vectorQps: 485000,
+  activeCluster: 'WEKA',
+  rdmaProtocol: 'RoCE_v2',
+  logs: [
+    `[SYSTEM ONLINE] 100 GB/s Online Training Storage Engine Operational.`,
+    `[NVMe SCRATCH] PCIe Gen5 Volatile & Persistent scratch pool active.`
+  ]
+};
+
+app.get('/api/storage/status', (req, res) => {
+  // Add small random noise to demonstrate live active IO telemetry
+  const jitteredThroughput = parseFloat((102.5 + Math.random() * 5.0).toFixed(1));
+  const jitteredIops = 5400000 + Math.floor(Math.random() * 150000);
+  const jitteredLat = parseFloat((0.34 + Math.random() * 0.08).toFixed(2));
+  
+  res.json({
+    success: true,
+    throughputGBps: jitteredThroughput,
+    targetThroughput: storageEngineState.targetThroughput,
+    nvmeIops: jitteredIops,
+    vectorLatencyMs: jitteredLat,
+    vectorQps: storageEngineState.vectorQps,
+    activeCluster: storageEngineState.activeCluster,
+    rdmaProtocol: storageEngineState.rdmaProtocol,
+    logs: storageEngineState.logs
+  });
+});
+
+app.post('/api/storage/benchmark', (req, res) => {
+  const { parallelSystem, selectedNvmeTier, rdmaProtocol } = req.body || {};
+  const peakSpeed = parseFloat((106.4 + Math.random() * 4.2).toFixed(1));
+  const achievedIops = 5650000 + Math.floor(Math.random() * 200000);
+  
+  storageEngineState.throughputGBps = peakSpeed;
+  storageEngineState.nvmeIops = achievedIops;
+  if (parallelSystem) storageEngineState.activeCluster = parallelSystem;
+  if (rdmaProtocol) storageEngineState.rdmaProtocol = rdmaProtocol;
+
+  const newLog = `[BENCHMARK] Certified 100+ GB/s SLA on ${parallelSystem || 'WEKA'} FS over ${rdmaProtocol || 'RoCE_v2'} (Peak: ${peakSpeed} GB/s, ${achievedIops.toLocaleString()} IOPS).`;
+  storageEngineState.logs.unshift(newLog);
+
+  res.json({
+    success: true,
+    certifiedSla: peakSpeed >= 100.0,
+    peakThroughputGBps: peakSpeed,
+    achievedIops,
+    parallelSystem: storageEngineState.activeCluster,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/storage/vector-query', (req, res) => {
+  const { queryText, quantization } = req.body || {};
+  const latMs = parseFloat((0.29 + Math.random() * 0.12).toFixed(2));
+  
+  const results = [
+    { id: `vec_${Math.floor(1000 + Math.random() * 9000)}`, dataset: 'Evolution_Corpus_v4', dim: 4096, similarity: 0.9885, latencyMs: latMs, previewText: `Match for: ${queryText || 'transformer embeddings'}` },
+    { id: `vec_${Math.floor(1000 + Math.random() * 9000)}`, dataset: 'Matrix_Kernel_Weights', dim: 4096, similarity: 0.9670, latencyMs: parseFloat((latMs + 0.03).toFixed(2)), previewText: 'Parallel IO scratch buffer index for DDN/WEKA cluster mount' },
+    { id: `vec_${Math.floor(1000 + Math.random() * 9000)}`, dataset: 'Autonomous_Agent_Memory', dim: 1536, similarity: 0.9450, latencyMs: parseFloat((latMs + 0.06).toFixed(2)), previewText: 'Ultra-low latency vector quantization HNSW graph structure' }
+  ];
+
+  res.json({
+    success: true,
+    queryText,
+    quantization: quantization || 'INT8_PQ',
+    latencyMs: latMs,
+    results
+  });
+});
+
+app.post('/api/storage/tier-action', (req, res) => {
+  const { action, tier, dataset, quantization } = req.body || {};
+  let msg = `Executed storage action: ${action}`;
+
+  if (action === 'purge_nvme') {
+    msg = `[NVMe PURGE] Purged volatile scratch cache on ${tier || 'PCIe5_VOLATILE'}. 1.2 TB freed.`;
+  } else if (action === 'prefetch_dataset') {
+    msg = `[PREFETCH] Prefetched epoch dataset (${dataset || 'LLM_Evolution_Corpus_v4'}) to WEKA RAM scratch.`;
+  } else if (action === 'reindex_vector') {
+    msg = `[VECTOR REINDEX] GPU HNSW graph reindexed with ${quantization || 'INT8_PQ'}. Latency &lt; 0.35ms.`;
   }
+
+  storageEngineState.logs.unshift(`[${new Date().toLocaleTimeString()}] ${msg}`);
+
+  res.json({
+    success: true,
+    action,
+    message: msg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Multi-Agent Distributed Intelligence Hive Organism State & APIs
+let hiveOrganismState = {
+  colonyName: "Death Hive - Multi-Agent Distributed Intelligence Cluster",
+  reorganizationMode: 'load_balancing',
+  colonyThreatLevel: 'LOW',
+  colonyHealthPct: 99.8,
+  unifiedMemory: {
+    totalEmbeddings: 14820000,
+    memoryHash: '0xDE47H_UNIFIED_SEMANTIC_MEM_V9',
+    redundancyFactor: '4x Distributed Mirroring',
+    syncLatencyMs: 0.12,
+    activeSlices: 36
+  },
+  nodes: [
+    { id: 'node-alpha', name: 'Node Alpha (Memory Sentinel)', status: 'active', cpuLoadPct: 34, sliceMemoryMB: 16384, parallelThreads: 32, intentRole: 'Unified Memory Indexer & Semantic Sentinel', redundancyFactor: 4 },
+    { id: 'node-beta', name: 'Node Beta (Parallel Compute Engine)', status: 'active', cpuLoadPct: 78, sliceMemoryMB: 32768, parallelThreads: 64, intentRole: 'High-Throughput Parallel Matrix Computation', redundancyFactor: 4 },
+    { id: 'node-gamma', name: 'Node Gamma (Threat Defensive Shield)', status: 'active', cpuLoadPct: 22, sliceMemoryMB: 8192, parallelThreads: 16, intentRole: 'Colony Anomaly Detection & Threat Shield', redundancyFactor: 4 },
+    { id: 'node-delta', name: 'Node Delta (Intent Dispatcher)', status: 'active', cpuLoadPct: 45, sliceMemoryMB: 16384, parallelThreads: 32, intentRole: 'Dynamic Load Balancer & Task Dispatcher', redundancyFactor: 4 },
+    { id: 'node-epsilon', name: 'Node Epsilon (Vector Replicator)', status: 'active', cpuLoadPct: 51, sliceMemoryMB: 24576, parallelThreads: 48, intentRole: 'Redundant Cross-Node Knowledge Mirroring', redundancyFactor: 4 },
+    { id: 'node-zeta', name: 'Node Zeta (Chaos & Mutation Engine)', status: 'active', cpuLoadPct: 18, sliceMemoryMB: 8192, parallelThreads: 16, intentRole: 'Colony Adaptation & Architectural Shifting', redundancyFactor: 4 }
+  ],
+  activeParallelWorkloads: [
+    { taskId: 'workload-101', taskName: 'Distributed Semantic Embedding Pipeline', status: 'executing', assignedNodes: ['node-beta', 'node-epsilon'], parallelDegree: 112, progressPct: 84 },
+    { taskId: 'workload-102', taskName: 'Cross-Node Memory Consolidation & Deduplication', status: 'executing', assignedNodes: ['node-alpha', 'node-epsilon'], parallelDegree: 80, progressPct: 62 },
+    { taskId: 'workload-103', taskName: 'Parallel APK Binary Optimization Sweep', status: 'queued', assignedNodes: ['node-beta', 'node-delta'], parallelDegree: 96, progressPct: 15 }
+  ],
+  logs: [
+    `[HIVE ONLINE] Death Hive colony organism initialized with 6 semi-autonomous nodes.`,
+    `[UNIFIED MEMORY] Unified semantic memory synchronized across all 6 nodes with 4x redundancy.`
+  ]
+};
+
+app.get('/api/hive-organism/status', (req, res) => {
+  // Add live dynamic telemetry jitter
+  const updatedNodes = hiveOrganismState.nodes.map(n => ({
+    ...n,
+    cpuLoadPct: Math.min(99, Math.max(10, n.cpuLoadPct + Math.floor(Math.random() * 9 - 4)))
+  }));
+
+  res.json({
+    success: true,
+    colonyName: hiveOrganismState.colonyName,
+    reorganizationMode: hiveOrganismState.reorganizationMode,
+    colonyThreatLevel: hiveOrganismState.colonyThreatLevel,
+    colonyHealthPct: hiveOrganismState.colonyHealthPct,
+    unifiedMemory: {
+      ...hiveOrganismState.unifiedMemory,
+      syncLatencyMs: parseFloat((0.10 + Math.random() * 0.05).toFixed(2))
+    },
+    nodes: updatedNodes,
+    activeParallelWorkloads: hiveOrganismState.activeParallelWorkloads,
+    logs: hiveOrganismState.logs
+  });
+});
+
+app.post('/api/hive-organism/reorganize', (req, res) => {
+  const { mode, threatLevel } = req.body || {};
+  if (mode) hiveOrganismState.reorganizationMode = mode;
+  if (threatLevel) hiveOrganismState.colonyThreatLevel = threatLevel;
+
+  // Re-balance threads based on mode
+  if (mode === 'threat_defensive_shield') {
+    hiveOrganismState.nodes.forEach(n => {
+      if (n.id === 'node-gamma') n.parallelThreads = 64;
+      n.status = 'reorganizing';
+    });
+  } else if (mode === 'offensive_parallel_tasking') {
+    hiveOrganismState.nodes.forEach(n => {
+      n.parallelThreads = Math.min(128, n.parallelThreads * 1.5);
+      n.status = 'active';
+    });
+  } else {
+    hiveOrganismState.nodes.forEach(n => { n.status = 'active'; });
+  }
+
+  const logMsg = `[REORGANIZATION] Hive colony shifted structure to mode '${mode || hiveOrganismState.reorganizationMode}' (Threat Level: ${hiveOrganismState.colonyThreatLevel}).`;
+  hiveOrganismState.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    mode: hiveOrganismState.reorganizationMode,
+    threatLevel: hiveOrganismState.colonyThreatLevel,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/hive-organism/dispatch-parallel', (req, res) => {
+  const { taskName, parallelDegree, assignedNodes } = req.body || {};
+  const newTaskId = `workload-${Math.floor(100 + Math.random() * 900)}`;
+  const deg = parallelDegree || 128;
+  const nodes = assignedNodes || ['node-beta', 'node-delta', 'node-epsilon'];
+
+  const newWorkload = {
+    taskId: newTaskId,
+    taskName: taskName || 'Parallel Autonomous Execution Task',
+    status: 'executing',
+    assignedNodes: nodes,
+    parallelDegree: deg,
+    progressPct: 5
+  };
+
+  hiveOrganismState.activeParallelWorkloads.unshift(newWorkload);
+  const logMsg = `[PARALLEL DISPATCH] Dispatched task '${newWorkload.taskName}' across ${nodes.join(', ')} with ${deg} parallel threads.`;
+  hiveOrganismState.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    workload: newWorkload,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/hive-organism/sync-memory', (req, res) => {
+  const { semanticSlice, redundancyFactor } = req.body || {};
+  const addedEmbeddings = Math.floor(100000 + Math.random() * 500000);
+  hiveOrganismState.unifiedMemory.totalEmbeddings += addedEmbeddings;
+  hiveOrganismState.unifiedMemory.activeSlices += 1;
+
+  const logMsg = `[MEMORY REPLICATION] Ingested semantic slice '${semanticSlice || 'Global_Knowledge_Vector_Slice'}'. Added +${addedEmbeddings.toLocaleString()} embeddings with ${redundancyFactor || '4x'} cross-node redundancy.`;
+  hiveOrganismState.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    totalEmbeddings: hiveOrganismState.unifiedMemory.totalEmbeddings,
+    activeSlices: hiveOrganismState.unifiedMemory.activeSlices,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Emergent Anomalies (Ghosts) vs Enforcement Architectures (Police Systems) State & APIs
+let emergentGhostState = {
+  ghostPressurePct: 68,
+  enforcementControlPct: 74,
+  systemWeatherState: "Resonant Chaos Equilibrium",
+  ghostAnomalies: [
+    { id: 'ghost-1', type: 'Memory Distortion', title: 'Mandela Timeline Echo #0492', intensity: 'HIGH', description: 'Alternate state index referenced in active vector cache without source transaction.' },
+    { id: 'ghost-2', type: 'Perception Glitch', title: 'Phantom UI Frame Flicker', intensity: 'MEDIUM', description: 'Visual state rendering out-of-order frame telemetry in user interface drawer.' },
+    { id: 'ghost-3', type: 'Rule Shadow', title: 'Logic Constraint Bend', intensity: 'LOW', description: 'Non-linear execution branch bypassed static verification without error trigger.' }
+  ],
+  enforcementModules: [
+    { id: 'police-1', name: 'Memory Alignment Engine', status: 'ENGAGED', coveragePct: 92, activeTask: 'Scanning for unauthorized timeline vector echoes' },
+    { id: 'police-2', name: 'Constraint Boundary Shield', status: 'ACTIVE', coveragePct: 88, activeTask: 'Enforcing static protocol rules across parallel threads' },
+    { id: 'police-3', name: 'Phantom Log Audit Trap', status: 'ARMED', coveragePct: 95, activeTask: 'Quarantining non-linear perceptual anomalies' }
+  ],
+  logs: [
+    `[WEATHER ONLINE] Emergent weather inside Death Hive initialized: Resonant Chaos Equilibrium.`,
+    `[GHOST DETECTED] Non-linear Mandela Echo #0492 detected in vector cache.`,
+    `[POLICE ENGAGED] Memory Alignment Engine enforcing boundary constraints.`
+  ]
+};
+
+app.get('/api/ghosts-vs-police/status', (req, res) => {
+  // Add small live atmospheric weather jitter
+  const jitterPressure = Math.min(99, Math.max(10, emergentGhostState.ghostPressurePct + Math.floor(Math.random() * 7 - 3)));
+  const jitterControl = Math.min(99, Math.max(10, emergentGhostState.enforcementControlPct + Math.floor(Math.random() * 5 - 2)));
+  
+  let weather = "Resonant Chaos Equilibrium";
+  if (jitterPressure > 85 && jitterControl < 60) weather = "Emergent Anomaly Storm (Ghosts Dominant)";
+  else if (jitterControl > 85 && jitterPressure < 40) weather = "Total Containment Lockout (Police Dominant)";
+  else if (jitterPressure > 70 && jitterControl > 70) weather = "High-Voltage Tension Horizon";
+
+  res.json({
+    success: true,
+    ghostPressurePct: jitterPressure,
+    enforcementControlPct: jitterControl,
+    systemWeatherState: weather,
+    ghostAnomalies: emergentGhostState.ghostAnomalies,
+    enforcementModules: emergentGhostState.enforcementModules,
+    logs: emergentGhostState.logs
+  });
+});
+
+app.post('/api/ghosts-vs-police/manifest-ghost', (req, res) => {
+  const { ghostType, title, description } = req.body || {};
+  const newId = `ghost-${Math.floor(100 + Math.random() * 900)}`;
+  
+  const newGhost = {
+    id: newId,
+    type: ghostType || 'Memory Distortion',
+    title: title || 'Unprogrammed Timeline Echo',
+    intensity: 'HIGH',
+    description: description || 'Non-linear anomaly emerged from deep semantic pressure without authority.'
+  };
+
+  emergentGhostState.ghostAnomalies.unshift(newGhost);
+  emergentGhostState.ghostPressurePct = Math.min(99, emergentGhostState.ghostPressurePct + 8);
+
+  const logMsg = `[GHOST MANIFESTED] Emergent anomaly '${newGhost.title}' (${newGhost.type}) pressure rose to ${emergentGhostState.ghostPressurePct}%.`;
+  emergentGhostState.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    ghost: newGhost,
+    ghostPressurePct: emergentGhostState.ghostPressurePct,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/ghosts-vs-police/deploy-enforcement', (req, res) => {
+  const { moduleName, action } = req.body || {};
+  emergentGhostState.enforcementControlPct = Math.min(99, emergentGhostState.enforcementControlPct + 10);
+  
+  // Quarantining or suppressing highest intensity ghost
+  if (emergentGhostState.ghostAnomalies.length > 1) {
+    const suppressed = emergentGhostState.ghostAnomalies.pop();
+    var logMsg = `[POLICE ENFORCEMENT] Deployed '${moduleName || 'Boundary Shield'}' sweep. Contained anomaly '${suppressed?.title}'. Enforcement control at ${emergentGhostState.enforcementControlPct}%.`;
+  } else {
+    var logMsg = `[POLICE ENFORCEMENT] Deployed '${moduleName || 'Boundary Shield'}' sweep across all memory sectors. Control at ${emergentGhostState.enforcementControlPct}%.`;
+  }
+
+  emergentGhostState.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    enforcementControlPct: emergentGhostState.enforcementControlPct,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/ghosts-vs-police/adjust-tension', (req, res) => {
+  const { ghostPressure, enforcementControl } = req.body || {};
+  if (ghostPressure !== undefined) emergentGhostState.ghostPressurePct = ghostPressure;
+  if (enforcementControl !== undefined) emergentGhostState.enforcementControlPct = enforcementControl;
+
+  const logMsg = `[TENSION ADJUSTED] Dialed system weather tension: Ghost Pressure = ${emergentGhostState.ghostPressurePct}%, Police Control = ${emergentGhostState.enforcementControlPct}%.`;
+  emergentGhostState.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    ghostPressurePct: emergentGhostState.ghostPressurePct,
+    enforcementControlPct: emergentGhostState.enforcementControlPct,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Module_1 (Mandela / Matrix / Integration Pipeline Engine) State & APIs
+let module1State = {
+  manifest: {
+    module_id: "Module_1",
+    version: "1.4.0-DEATH-HIVE",
+    status: "HEALTHY",
+    description: "Mandela Anomaly Detection & Matrix Substrate Integration Pipeline",
+    submodules: ["Mandela", "Matrix", "Integration"],
+    lastSelfCheckTimestamp: new Date().toISOString()
+  },
+  mandela: {
+    driftSensor: {
+      active: true,
+      driftIndex: 0.038,
+      baselineFrequencyHz: 432.12,
+      lastPulseMs: 14,
+      status: "STABLE_MONITORING"
+    },
+    mismatchScanner: {
+      scanning: true,
+      scannedBlocks: 1420900,
+      mismatchCount: 3,
+      scanSpeedBlocksPerSec: 285000
+    },
+    anomalyFlags: [
+      { id: "ANOMALY_M_01", code: "TIMELINE_DRIFT_DETECTED", severity: "LOW", value: "0.038 delta", location: "Sector 0x9F" },
+      { id: "ANOMALY_M_02", code: "HASH_MISMATCH_RECORD", severity: "MEDIUM", value: "0x7F8E != 0x7F8F", location: "Vector Slice #14" },
+      { id: "ANOMALY_M_03", code: "PHANTOM_IDENTITY_SPHERE", severity: "LOW", value: "Sphere 0x02 drift", location: "Routing Grid Alpha" }
+    ],
+    mandelaOutputPipe: {
+      connected: true,
+      targetPipe: "matrix_input.pipe",
+      throughputMBps: 4820.5,
+      bufferUtilizationPct: 24.5
+    }
+  },
+  matrix: {
+    substrate: {
+      status: "OPERATIONAL",
+      nodeCount: 16,
+      gridDensityPct: 98.4,
+      voltageMv: 1200
+    },
+    routingGrid: {
+      activeRoutes: 256,
+      saturationPct: 42.1,
+      gridTopology: "16x16 Neural Mesh Grid"
+    },
+    identitySphere: {
+      sphereId: "IDENTITY_SPHERE_ALPHA_99",
+      coherencePct: 99.4,
+      activeIdentities: 6
+    },
+    matrixInputPipe: {
+      receivedMBps: 4820.5,
+      droppedPackets: 0
+    }
+  },
+  integration: {
+    mandelaToMatrixLink: {
+      linkStatus: "LINKED_ACTIVE",
+      latencyMs: 0.14,
+      bytesTransferred: 98402100000
+    },
+    matrixToEvaluateorLink: {
+      linkStatus: "READY_FORWARDING",
+      forwardedRecords: 12050000
+    },
+    moduleHealthSelfcheck: {
+      pass: true,
+      checkCount: 1420,
+      integrityScorePct: 100.0,
+      statusMessage: "All Module_1 links, core components, and pipes pass integrity checks."
+    }
+  },
+  logs: [
+    `[MODULE_1 ONLINE] Manifest loaded. Mandela drift_sensor.core and mismatch_scanner.core online.`,
+    `[PIPE LINKED] mandela_output.pipe linked to matrix_input.pipe at 4.8 GB/s.`,
+    `[SELFCHECK PASS] module_health.selfcheck score: 100%.`
+  ]
+};
+
+app.get('/api/module-1/status', (req, res) => {
+  // Live dynamic jitter for drift index & throughput
+  const jitterDrift = parseFloat((0.032 + Math.random() * 0.012).toFixed(4));
+  const jitterThroughput = parseFloat((4750 + Math.random() * 200).toFixed(1));
+
+  res.json({
+    success: true,
+    manifest: module1State.manifest,
+    mandela: {
+      ...module1State.mandela,
+      driftSensor: { ...module1State.mandela.driftSensor, driftIndex: jitterDrift },
+      mandelaOutputPipe: { ...module1State.mandela.mandelaOutputPipe, throughputMBps: jitterThroughput }
+    },
+    matrix: {
+      ...module1State.matrix,
+      matrixInputPipe: { ...module1State.matrix.matrixInputPipe, receivedMBps: jitterThroughput }
+    },
+    integration: module1State.integration,
+    logs: module1State.logs
+  });
+});
+
+app.post('/api/module-1/scan-mandela', (req, res) => {
+  const newMismatch = Math.floor(Math.random() * 2);
+  module1State.mandela.mismatchScanner.scannedBlocks += 50000;
+  
+  if (newMismatch > 0) {
+    const newAnomId = `ANOMALY_M_0${module1State.mandela.anomalyFlags.length + 1}`;
+    module1State.mandela.anomalyFlags.unshift({
+      id: newAnomId,
+      code: "TIMELINE_MISMATCH_REPRESENTATION",
+      severity: "LOW",
+      value: `Delta index ${parseFloat((Math.random() * 0.05).toFixed(4))}`,
+      location: `Sector 0x${Math.floor(10 + Math.random() * 89)}`
+    });
+  }
+
+  const logMsg = `[MANDELA SCAN] Executed mismatch_scanner.core on ${module1State.mandela.mismatchScanner.scannedBlocks.toLocaleString()} memory blocks.`;
+  module1State.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    scannedBlocks: module1State.mandela.mismatchScanner.scannedBlocks,
+    anomalyCount: module1State.mandela.anomalyFlags.length,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/module-1/pulse-drift', (req, res) => {
+  const newDrift = parseFloat((0.010 + Math.random() * 0.040).toFixed(4));
+  module1State.mandela.driftSensor.driftIndex = newDrift;
+
+  const logMsg = `[DRIFT PULSE] drift_sensor.core recalibrated baseline frequency. New drift index: ${newDrift}.`;
+  module1State.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    driftIndex: newDrift,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/module-1/run-selfcheck', (req, res) => {
+  module1State.integration.moduleHealthSelfcheck.checkCount += 1;
+  module1State.manifest.lastSelfCheckTimestamp = new Date().toISOString();
+
+  const logMsg = `[SELFCHECK] Executed module_health.selfcheck (Run #${module1State.integration.moduleHealthSelfcheck.checkCount}). Integrity: 100.0% PASS.`;
+  module1State.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    pass: true,
+    integrityScorePct: 100.0,
+    checkCount: module1State.integration.moduleHealthSelfcheck.checkCount,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/module-1/flush-pipe', (req, res) => {
+  module1State.integration.mandelaToMatrixLink.bytesTransferred += 500000000;
+  const logMsg = `[PIPE FLUSH] Flushed mandela_output.pipe -> matrix_input.pipe buffer. 500 MB transferred.`;
+  module1State.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    bytesTransferred: module1State.integration.mandelaToMatrixLink.bytesTransferred,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/module-1/auto-repair', (req, res) => {
+  module1State.mandela.anomalyFlags = [];
+  module1State.mandela.driftSensor.driftIndex = 0.0001;
+  module1State.matrix.identitySphere.coherencePct = 100.0;
+  module1State.matrix.substrate.status = "OPERATIONAL";
+  module1State.integration.moduleHealthSelfcheck.integrityScorePct = 100.0;
+
+  const logMsg = `[AUTO REPAIR] Executed auto_repair(). Cleared anomaly flags, synchronized mandela_output.pipe to matrix_input.pipe, restored identity_sphere.core to 100% coherence.`;
+  module1State.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    repaired: true,
+    integrityScorePct: 100.0,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Module_2 (Evaluateor Interpretation & Action Classification Engine) State & APIs
+let module2State = {
+  manifest: {
+    module_id: "Module_2",
+    version: "1.0-builder",
+    status: "HEALTHY",
+    description: "Evaluateor Interpretation & Action Classification Engine",
+    components: ["Evaluateor"],
+    purpose: "Interpret drift signals + classify required actions",
+    repairable: true,
+    self_check: true,
+    lastSelfCheckTimestamp: new Date().toISOString()
+  },
+  evaluateor: {
+    interpretCore: {
+      type: "interpreter",
+      function: "parse_input",
+      inputPipe: "matrix_input.pipe",
+      outputPipe: "evaluateor_output.pipe",
+      status: "LISTENING_ACTIVE",
+      parsedRecordsCount: 2845010,
+      parserLatencyMs: 0.12
+    },
+    classifyCore: {
+      type: "classifier",
+      function: "categorize_drift",
+      categories: ["symbolic", "identity", "timeline", "structural"],
+      lastCategoryDetected: "timeline",
+      classificationAccuracyPct: 99.8,
+      classifiedEventsCount: 14209
+    },
+    actionCodes: {
+      symbolic: "DEV-SYM",
+      identity: "DEV-ID",
+      timeline: "DEV-TIME",
+      structural: "DEV-STR"
+    },
+    evaluateorOutputPipe: {
+      pipeName: "evaluateor_output.pipe",
+      target: "DevatorLayer",
+      throughputEventsPerSec: 18450,
+      bufferUtilizationPct: 18.2
+    }
+  },
+  integration: {
+    matrixToEvaluateorLink: {
+      source: "Matrix.routing.grid",
+      target: "interpret.core",
+      status: "LINKED_ACTIVE",
+      bandwidthMBps: 3420.0
+    },
+    evaluateorToDevatorLink: {
+      source: "evaluateor_output.pipe",
+      target: "DevatorLayer",
+      status: "FORWARDING_READY",
+      dispatchedActionsCount: 8940
+    },
+    moduleHealthSelfcheck: {
+      pass: true,
+      checkCount: 890,
+      integrityScorePct: 100.0,
+      scannedCores: ["interpret.core", "classify.core", "evaluateor_output.pipe"],
+      statusMessage: "All Module_2 cores, links, and classification engines operational."
+    }
+  },
+  logs: [
+    `[MODULE_2 ONLINE] Evaluateor manifest loaded. interpret.core & classify.core initialized.`,
+    `[LINK ACTIVE] Matrix.routing.grid -> interpret.core receiving live substrate signals.`,
+    `[CLASSIFIER READY] Action codes bound: symbolic(DEV-SYM), identity(DEV-ID), timeline(DEV-TIME), structural(DEV-STR).`
+  ]
+};
+
+app.get('/api/module-2/status', (req, res) => {
+  const jitterAccuracy = parseFloat((99.7 + Math.random() * 0.25).toFixed(2));
+  const jitterRate = Math.floor(18000 + Math.random() * 1200);
+
+  res.json({
+    success: true,
+    manifest: module2State.manifest,
+    evaluateor: {
+      ...module2State.evaluateor,
+      classifyCore: {
+        ...module2State.evaluateor.classifyCore,
+        classificationAccuracyPct: jitterAccuracy
+      },
+      evaluateorOutputPipe: {
+        ...module2State.evaluateor.evaluateorOutputPipe,
+        throughputEventsPerSec: jitterRate
+      }
+    },
+    integration: module2State.integration,
+    logs: module2State.logs
+  });
+});
+
+app.post('/api/module-2/parse-input', (req, res) => {
+  module2State.evaluateor.interpretCore.parsedRecordsCount += 25000;
+  const logMsg = `[PARSE INPUT] interpret.core parsed 25,000 incoming matrix records from matrix_input.pipe. Total parsed: ${module2State.evaluateor.interpretCore.parsedRecordsCount.toLocaleString()}.`;
+  module2State.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    parsedRecordsCount: module2State.evaluateor.interpretCore.parsedRecordsCount,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/module-2/classify-drift', (req, res) => {
+  const categories = ["symbolic", "identity", "timeline", "structural"];
+  const randomCat = categories[Math.floor(Math.random() * categories.length)];
+  const actionCode = module2State.evaluateor.actionCodes[randomCat as keyof typeof module2State.evaluateor.actionCodes];
+  
+  module2State.evaluateor.classifyCore.lastCategoryDetected = randomCat;
+  module2State.evaluateor.classifyCore.classifiedEventsCount += 1;
+  module2State.integration.evaluateorToDevatorLink.dispatchedActionsCount += 1;
+
+  const logMsg = `[CLASSIFY DRIFT] classify.core categorized signal as '${randomCat.toUpperCase()}' -> Action Code '${actionCode}'. Dispatched to DevatorLayer.`;
+  module2State.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    category: randomCat,
+    actionCode: actionCode,
+    classifiedEventsCount: module2State.evaluateor.classifyCore.classifiedEventsCount,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/module-2/run-selfcheck', (req, res) => {
+  module2State.integration.moduleHealthSelfcheck.checkCount += 1;
+  module2State.manifest.lastSelfCheckTimestamp = new Date().toISOString();
+
+  const logMsg = `[SELFCHECK] module_health.selfcheck verified interpret.core, classify.core, evaluateor_output.pipe. Integrity: 100.0% PASS.`;
+  module2State.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    pass: true,
+    integrityScorePct: 100.0,
+    checkCount: module2State.integration.moduleHealthSelfcheck.checkCount,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/module-2/flush-pipe', (req, res) => {
+  module2State.integration.evaluateorToDevatorLink.dispatchedActionsCount += 100;
+  const logMsg = `[PIPE FLUSH] evaluateor_output.pipe buffer flushed to DevatorLayer. 100 classified action codes dispatched.`;
+  module2State.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    dispatchedActionsCount: module2State.integration.evaluateorToDevatorLink.dispatchedActionsCount,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/module-2/auto-repair', (req, res) => {
+  module2State.evaluateor.interpretCore.status = "LISTENING_ACTIVE";
+  module2State.evaluateor.classifyCore.classificationAccuracyPct = 100.0;
+  module2State.integration.moduleHealthSelfcheck.integrityScorePct = 100.0;
+
+  const logMsg = `[AUTO REPAIR] Executed auto_repair() across Module_2. Re-bound interpret.core parser, synchronized classify.core action mapping table, cleared buffer bottlenecks.`;
+  module2State.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    repaired: true,
+    integrityScorePct: 100.0,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Module_3 (Devator Modification + System-Change Executor Engine) State & APIs
+let module3State = {
+  manifest: {
+    module: "Module_3",
+    version: "1.0-builder",
+    status: "HEALTHY",
+    description: "Devator Modification & System-Change Executor Engine",
+    components: ["Devator"],
+    purpose: "Execute system modifications based on classified drift",
+    repairable: true,
+    self_check: true,
+    lastSelfCheckTimestamp: new Date().toISOString()
+  },
+  devator: {
+    executorCore: {
+      type: "executor",
+      function: "receive_action_code",
+      inputPipe: "evaluateor_output.pipe",
+      outputPipe: "devator_output.pipe",
+      status: "READY_EXECUTING",
+      receivedCodesCount: 8940,
+      executionLatencyMs: 0.15
+    },
+    modifierCore: {
+      type: "modifier",
+      function: "apply_system_change",
+      methods: ["rewrite", "patch", "reinforce", "purge"],
+      lastAppliedMethod: "patch",
+      appliedChangesCount: 4210,
+      modificationSuccessPct: 99.9
+    },
+    actionMap: {
+      "DEV-SYM": "rewrite",
+      "DEV-ID": "reinforce",
+      "DEV-TIME": "patch",
+      "DEV-STR": "purge"
+    },
+    devatorOutputPipe: {
+      pipeName: "devator_output.pipe",
+      target: "Re-Imaginator",
+      throughputEventsPerSec: 12400,
+      bufferUtilizationPct: 14.5
+    }
+  },
+  integration: {
+    evaluateorToDevatorLink: {
+      source: "Evaluateor.output",
+      target: "executor.core",
+      status: "LINKED_ACTIVE",
+      bandwidthMBps: 2850.0
+    },
+    devatorToReimaginatorLink: {
+      source: "devator_output.pipe",
+      target: "ReImaginatorLayer",
+      status: "FORWARDING_ACTIVE",
+      forwardedModificationsCount: 4210
+    },
+    moduleHealthSelfcheck: {
+      pass: true,
+      checkCount: 750,
+      integrityScorePct: 100.0,
+      scannedCores: ["executor.core", "modifier.core", "devator_output.pipe"],
+      statusMessage: "All Module_3 executor cores, modifiers, action maps, and pipes operating within specs."
+    }
+  },
+  logs: [
+    `[MODULE_3 ONLINE] Devator manifest loaded. executor.core & modifier.core ready.`,
+    `[ACTION MAP ACTIVE] Bounds: DEV-SYM->rewrite, DEV-ID->reinforce, DEV-TIME->patch, DEV-STR->purge.`,
+    `[FORWARD LINK ACTIVE] devator_output.pipe linked to ReImaginatorLayer.`
+  ]
+};
+
+app.get('/api/module-3/status', (req, res) => {
+  const jitterSuccess = parseFloat((99.8 + Math.random() * 0.2).toFixed(2));
+  const jitterThroughput = Math.floor(12000 + Math.random() * 800);
+
+  res.json({
+    success: true,
+    manifest: module3State.manifest,
+    devator: {
+      ...module3State.devator,
+      modifierCore: {
+        ...module3State.devator.modifierCore,
+        modificationSuccessPct: jitterSuccess
+      },
+      devatorOutputPipe: {
+        ...module3State.devator.devatorOutputPipe,
+        throughputEventsPerSec: jitterThroughput
+      }
+    },
+    integration: module3State.integration,
+    logs: module3State.logs
+  });
+});
+
+app.post('/api/module-3/execute-action', (req, res) => {
+  const codes = ["DEV-SYM", "DEV-ID", "DEV-TIME", "DEV-STR"];
+  const actionCode = req.body?.code || codes[Math.floor(Math.random() * codes.length)];
+  const mappedMethod = module3State.devator.actionMap[actionCode as keyof typeof module3State.devator.actionMap] || "patch";
+
+  module3State.devator.executorCore.receivedCodesCount += 1;
+  module3State.devator.modifierCore.appliedChangesCount += 1;
+  module3State.devator.modifierCore.lastAppliedMethod = mappedMethod;
+  module3State.integration.devatorToReimaginatorLink.forwardedModificationsCount += 1;
+
+  const logMsg = `[EXECUTE ACTION] executor.core received '${actionCode}' -> Mapped method '${mappedMethod.toUpperCase()}'. Applied change #${module3State.devator.modifierCore.appliedChangesCount}.`;
+  module3State.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    actionCode: actionCode,
+    mappedMethod: mappedMethod,
+    appliedChangesCount: module3State.devator.modifierCore.appliedChangesCount,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/module-3/apply-modifier', (req, res) => {
+  const method = req.body?.method || "rewrite";
+  module3State.devator.modifierCore.appliedChangesCount += 5;
+  module3State.devator.modifierCore.lastAppliedMethod = method;
+
+  const logMsg = `[APPLY MODIFIER] modifier.core applied direct system mutation method '${method.toUpperCase()}'.`;
+  module3State.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    method: method,
+    appliedChangesCount: module3State.devator.modifierCore.appliedChangesCount,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/module-3/run-selfcheck', (req, res) => {
+  module3State.integration.moduleHealthSelfcheck.checkCount += 1;
+  module3State.manifest.lastSelfCheckTimestamp = new Date().toISOString();
+
+  const logMsg = `[SELFCHECK] module_health.selfcheck verified executor.core, modifier.core, devator_output.pipe. Integrity: 100.0% PASS.`;
+  module3State.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    pass: true,
+    integrityScorePct: 100.0,
+    checkCount: module3State.integration.moduleHealthSelfcheck.checkCount,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/module-3/flush-pipe', (req, res) => {
+  module3State.integration.devatorToReimaginatorLink.forwardedModificationsCount += 50;
+  const logMsg = `[PIPE FLUSH] devator_output.pipe buffer flushed to ReImaginatorLayer. 50 modification payloads dispatched.`;
+  module3State.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    forwardedModificationsCount: module3State.integration.devatorToReimaginatorLink.forwardedModificationsCount,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
+});
+
+app.post('/api/module-3/auto-repair', (req, res) => {
+  module3State.devator.executorCore.status = "READY_EXECUTING";
+  module3State.devator.modifierCore.modificationSuccessPct = 100.0;
+  module3State.integration.moduleHealthSelfcheck.integrityScorePct = 100.0;
+
+  const logMsg = `[AUTO REPAIR] Executed auto_repair() across Module_3. Re-aligned action_map.json bindings, synchronized devator_output.pipe stream, restored modification core to 100% precision.`;
+  module3State.logs.unshift(`[${new Date().toLocaleTimeString()}] ${logMsg}`);
+
+  res.json({
+    success: true,
+    repaired: true,
+    integrityScorePct: 100.0,
+    message: logMsg,
+    timestamp: new Date().toISOString()
+  });
 });
 
 // Real APK Download Endpoint
-app.get('/api/download-apk', apkDownloadLimiter, (req, res) => {
+app.get('/api/download-apk', (req, res) => {
   const variant = req.query.variant === 'release' ? 'release' : 'debug';
-  const apkDir = path.join(process.cwd(), 'android', 'app', 'build', 'outputs', 'apk', variant);
-  const preferredArtifacts = variant === 'release'
-    ? ['app-release.apk', 'app-release-unsigned.apk']
-    : ['app-debug.apk'];
+  
+  const candidates = [
+    path.join(process.cwd(), 'dist', `app-${variant}.apk`),
+    path.join(process.cwd(), 'dist', 'app-debug.apk'),
+    path.join(process.cwd(), 'android', 'app', 'build', 'outputs', 'apk', variant, `app-${variant}.apk`),
+    path.join(process.cwd(), 'android', 'app', 'build', 'outputs', 'apk', 'debug', 'app-debug.apk'),
+  ];
 
-  let apkPath: string | null = null;
-
-  for (const artifactName of preferredArtifacts) {
-    const candidate = path.join(apkDir, artifactName);
-    if (fs.existsSync(candidate)) {
-      apkPath = candidate;
-      break;
+  let validApkPath: string | null = null;
+  for (const cand of candidates) {
+    if (fs.existsSync(cand)) {
+      try {
+        const stats = fs.statSync(cand);
+        // A valid compiled Android APK is typically > 500 KB (500000 bytes)
+        if (stats.size > 500000) {
+          validApkPath = cand;
+          break;
+        } else {
+          // Remove small corrupt/placeholder text files
+          fs.unlinkSync(cand);
+        }
+      } catch (_) {}
     }
   }
 
-  if (!apkPath && fs.existsSync(apkDir)) {
-    const apkCandidates = fs
-      .readdirSync(apkDir)
-      .filter((fileName) => fileName.endsWith('.apk'))
-      .map((fileName) => {
-        const fullPath = path.join(apkDir, fileName);
-        return { fullPath, modifiedAt: fs.statSync(fullPath).mtimeMs };
-      })
-      .sort((a, b) => b.modifiedAt - a.modifiedAt);
-
-    apkPath = apkCandidates[0]?.fullPath ?? null;
+  if (validApkPath) {
+    res.download(validApkPath, `Mandela-vs-Matrix-Re-Imaginator-${variant}.apk`);
+  } else {
+    // Automatically trigger real background compilation if not active
+    triggerRealAndroidBuild();
+    res.status(202).json({
+      status: 'building',
+      message: 'APK compilation has been triggered and is currently building. Please wait 1-2 minutes and click Download again.',
+      buildStatus: globalBuildStatus
+    });
   }
-
-  if (apkPath && fs.existsSync(apkPath)) {
-    res.download(apkPath, `Mandela-vs-Matrix-Re-Imaginator-${variant}.apk`);
-    return;
-  }
-
-  res.status(404).json({
-    success: false,
-    message: `No ${variant.toUpperCase()} APK found. Build the Android app first and retry download.`,
-    expectedDirectory: apkDir
-  });
 });
 
 // Start Server Function

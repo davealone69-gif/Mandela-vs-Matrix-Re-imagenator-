@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.mandelamatrix.reimaginator',
-  appName: 'Re-Imaginator 1A',
+  appId: 'com.drivelog',
+  appName: 'DriveLog',
   webDir: 'dist'
 };
 

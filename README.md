@@ -20,6 +20,9 @@ This deliverables package is structured to provide an immediate, plug-and-play d
 │   ├── press_release.txt               # Public wire-ready launch press release
 │   ├── email_templates.txt             # HTML & plain-text email launch templates
 │   └── social_posts.txt                # Multi-platform social media campaign copy
+├── web/
+│   ├── index.html                      # Interactive product launch landing page
+│   └── manifest.json                   # Web Application manifest (PWA compliant)
 ├── legal/
 │   └── trademark_notes.md              # Trademark compliance and attribution rules
 ├── project/
@@ -38,7 +41,7 @@ This deliverables package is structured to provide an immediate, plug-and-play d
 ## Quick Start Guide
 
 1. **Brand Assets**: Review the visual rules in `brand/brand_guidelines.md` and `brand/logo_usage.md` before deploying the logos in `assets/`.
-2. **Web & UI**: Point your web applications to the custom Tailwind-compatible variables defined in `brand/colors_typography.css`. Use the app entry at `index.html` and manifest at `public/manifest.json`.
+2. **Web & UI**: Point your web applications to the custom Tailwind-compatible variables defined in `brand/colors_typography.css`. Open `web/index.html` to see the live branding in action.
 3. **API & Engineering**: Use `api/openapi.yaml` in your API gateway or mock server generators (e.g., Swagger, Prism) to begin backend integration.
 4. **Communications**: Tailor the templates in `comms/press_release.txt` and `comms/email_templates.txt` by replacing the bracketed placeholders (e.g., `[CEO Name]`) with your official company details.
 5. **Project Management**: Import the `project/gantt_tasks.csv` directly into MS Project, Jira, or Smartsheet to track the 12-week roll-out.

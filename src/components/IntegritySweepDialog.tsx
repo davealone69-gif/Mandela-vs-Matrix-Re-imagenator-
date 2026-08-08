@@ -66,7 +66,7 @@ export default function IntegritySweepDialog({ isDark, onClose, files }: Integri
       severity: 'MEDIUM',
       status: 'pending',
       desc: 'Namespace path folder directory name does not align with application package declaration.',
-      resolution: "Aligned structural directories to match defined application namespace 'com.mandelamatrix.reimaginator'."
+      resolution: "Aligned structural directories to match defined application namespace 'com.drivelog'."
     },
     {
       key: 'missing_manifest_fields',
@@ -74,7 +74,7 @@ export default function IntegritySweepDialog({ isDark, onClose, files }: Integri
       severity: 'HIGH',
       status: 'pending',
       desc: 'Crucial Android Manifest properties (like explicit activity exporting flags or target SDK variables) are absent.',
-      resolution: "Appended missing 'android:exported' fields and set SDK compatibility tags to SDK 36+."
+      resolution: "Appended missing 'android:exported' fields and set SDK compatibility tags to SDK 34+."
     }
   ]);
 
@@ -88,6 +88,7 @@ export default function IntegritySweepDialog({ isDark, onClose, files }: Integri
     setIsReconciling(false);
     setIssues(prev => prev.map(issue => ({ ...issue, status: 'pending' })));
     
+    // Phase 1: Pre-Sweep Snapshot
     addLog('[INIT] Initializing Total System Integrity Sweep™');
     addLog('[PHASE 1] Pre-Sweep Snapshot Acquisition Layer');
     await new Promise(r => setTimeout(r, 600));
@@ -112,6 +113,7 @@ export default function IntegritySweepDialog({ isDark, onClose, files }: Integri
     addLog(' - Module topology reconstruction: Clean.');
     addLog(' - Resource atlas generation: Generated canonical snapshot.');
     
+    // Phase 2: Static Code Analysis
     setPhase(2);
     addLog('\n[PHASE 2] Static Code Analysis & Structural Integrity Verification');
     await new Promise(r => setTimeout(r, 700));
@@ -135,6 +137,7 @@ export default function IntegritySweepDialog({ isDark, onClose, files }: Integri
     addLog(' - Retrofit interface contract validation: OK.');
     await new Promise(r => setTimeout(r, 600));
     
+    // Phase 3: Dynamic Build Simulation
     setPhase(3);
     addLog('\n[PHASE 3] Dynamic Build Simulation & Failure Mode Extraction');
     setProgress(80);
@@ -156,6 +159,7 @@ export default function IntegritySweepDialog({ isDark, onClose, files }: Integri
     addLog(' - Dex generation profiling: Method count within constraints.');
     addLog(' - ProGuard mapping obfuscation simulation: Complete.');
     
+    // Done
     setPhase(4);
     setProgress(100);
     addLog('\n[SUCCESS] Integrity Sweep complete. 6 package & structure warnings identified.');
@@ -182,6 +186,8 @@ export default function IntegritySweepDialog({ isDark, onClose, files }: Integri
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4 transition-all animate-in fade-in duration-300">
       <div className={`w-full max-w-6xl rounded-3xl shadow-[0_0_80px_rgba(244,63,94,0.15)] overflow-hidden flex flex-col max-h-[90vh] ${isDark ? 'bg-[#0f1423]/95 backdrop-blur-2xl border border-rose-500/30 text-slate-200' : 'bg-white border border-rose-200 text-slate-800'}`}>
+         
+         {/* Title Header bar */}
          <div className="flex items-center justify-between p-4 border-b border-rose-950/30 shrink-0 bg-gradient-to-r from-rose-950/40 to-transparent">
             <h3 className="text-sm font-black tracking-wider flex items-center gap-2 text-rose-400">
               <ShieldCheck className="w-5 h-5" /> TOTAL SYSTEM INTEGRITY SWEEP™ & RECONCILIATION SUITE
@@ -190,17 +196,22 @@ export default function IntegritySweepDialog({ isDark, onClose, files }: Integri
               <X className="w-5 h-5" />
             </button>
          </div>
+         
          <div className="p-6 flex flex-col flex-1 overflow-hidden gap-6">
+            
+            {/* Header / Sub-text info */}
             <div className="flex gap-6 items-start shrink-0">
                <div className="w-16 h-16 rounded-full border-4 border-slate-800 flex items-center justify-center bg-slate-900 shrink-0 relative overflow-hidden">
                  {phase === 0 && <ShieldCheck className="w-7 h-7 text-slate-500" />}
                  {phase > 0 && phase < 4 && <Loader2 className="w-7 h-7 text-rose-500 animate-spin" />}
                  {phase === 4 && !reconciled && <ShieldAlert className="w-7 h-7 text-amber-500 animate-bounce" />}
                  {reconciled && <CheckCircle2 className="w-7 h-7 text-emerald-500" />}
+                 
                  {phase > 0 && phase < 4 && (
                    <div className="absolute inset-0 bg-rose-500/20 animate-ping" />
                  )}
                </div>
+               
                <div className="flex-1 flex flex-col gap-1">
                   <h4 className="text-base font-black text-slate-100 flex items-center gap-2">
                     Autonomous Diagnostic & Reconciliation Engine
@@ -209,6 +220,7 @@ export default function IntegritySweepDialog({ isDark, onClose, files }: Integri
                   <p className="text-xs text-slate-400 leading-relaxed">
                     Identify, isolate, and dynamically align core package structures. Scans for missing diagnostic logs, installer conflicts, manifest omissions, privilege mismatches, and ABI target architectures.
                   </p>
+                  
                   <div className="flex items-center gap-3 mt-1.5">
                     {phase === 0 ? (
                       <button onClick={runSweep} className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer shadow-lg active:scale-95">
@@ -242,10 +254,16 @@ export default function IntegritySweepDialog({ isDark, onClose, files }: Integri
                   </div>
                </div>
             </div>
+
+            {/* Progress Bar */}
             <div className="h-1.5 bg-slate-950 rounded-full overflow-hidden shrink-0 border border-slate-900">
                <div className="h-full bg-rose-500 transition-all duration-500 ease-out shadow-[0_0_8px_#f43f5e]" style={{ width: `${progress}%` }} />
             </div>
+
+            {/* Split Grid Panel */}
             <div className="flex-1 grid grid-cols-1 md:grid-cols-2 gap-5 overflow-hidden">
+               
+               {/* Left column: Console Output Logs */}
                <div className="flex flex-col gap-2 overflow-hidden h-full">
                   <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 flex items-center gap-1">
                      <Activity className="w-3.5 h-3.5" /> High-Fidelity Diagnostics Console
@@ -275,6 +293,8 @@ export default function IntegritySweepDialog({ isDark, onClose, files }: Integri
                      )}
                   </div>
                </div>
+
+               {/* Right column: Issues Healing Matrix */}
                <div className="flex flex-col gap-2 overflow-hidden h-full">
                   <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 flex items-center justify-between">
                      <span className="flex items-center gap-1"><Cpu className="w-3.5 h-3.5" /> Package & Structure Healing Matrix</span>
@@ -284,6 +304,7 @@ export default function IntegritySweepDialog({ isDark, onClose, files }: Integri
                        </span>
                      )}
                   </span>
+
                   <div className="flex-1 overflow-y-auto flex flex-col gap-3 pr-1">
                      {issues.map((issue) => {
                        return (
@@ -296,12 +317,15 @@ export default function IntegritySweepDialog({ isDark, onClose, files }: Integri
                              'bg-slate-950/20 border-slate-900 opacity-40'
                            }`}
                          >
+                            {/* Icon status indicator */}
                             <div className="shrink-0 mt-0.5">
                               {issue.status === 'pending' && <AlertCircle className="w-4 h-4 text-slate-600" />}
                               {issue.status === 'detected' && <ShieldAlert className="w-4 h-4 text-rose-500 animate-pulse" />}
                               {issue.status === 'healing' && <Loader2 className="w-4 h-4 text-yellow-500 animate-spin" />}
                               {issue.status === 'resolved' && <CheckCircle2 className="w-4 h-4 text-emerald-400" />}
                             </div>
+
+                            {/* Info */}
                             <div className="flex-1 flex flex-col gap-1">
                                <div className="flex items-center justify-between">
                                   <span className={`text-xs font-black uppercase ${
@@ -323,7 +347,10 @@ export default function IntegritySweepDialog({ isDark, onClose, files }: Integri
                      })}
                   </div>
                </div>
+
             </div>
+
+            {/* Bottom Footer block */}
             <div className="flex justify-end border-t border-slate-900 pt-4 shrink-0">
                <button 
                  onClick={onClose}
@@ -332,6 +359,7 @@ export default function IntegritySweepDialog({ isDark, onClose, files }: Integri
                  Close Suite
                </button>
             </div>
+            
          </div>
       </div>
     </div>
