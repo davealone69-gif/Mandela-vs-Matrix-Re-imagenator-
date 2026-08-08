@@ -25,6 +25,26 @@ export interface SearchMatch {
   lineContent: string;
 }
 
+export interface AIProviderKey {
+  id: string;
+  name: string;
+  key: string;
+  isConfigured: boolean;
+  maskedKey: string;
+  status: 'active' | 'unconfigured' | 'invalid' | 'testing';
+  baseUrl?: string;
+  models: string[];
+  docUrl: string;
+}
+
+export interface AIApiKeysConfig {
+  activeProvider: string;
+  defaultModel: string;
+  autoFailover: boolean;
+  keys: Record<string, string>;
+  customEndpoints?: Record<string, string>;
+}
+
 export interface EditorSettings {
   fontSize: number;
   fontFamily: 'JetBrains Mono' | 'Fira Code' | 'Source Code Pro' | 'monospace';
@@ -32,6 +52,7 @@ export interface EditorSettings {
   tabSize: 2 | 4;
   showLineNumbers: boolean;
   evolutionMode?: boolean;
+  aiKeysConfig?: AIApiKeysConfig;
 }
 
 export interface SavedApp {

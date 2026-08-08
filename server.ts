@@ -835,6 +835,209 @@ app.post('/api/credits/toggle-auto-switch', (req, res) => {
   res.json({ success: true, message: 'Settings updated successfully!', credits });
 });
 
+// REST Endpoints for AI Keys Configuration & Management
+const KEYS_FILE = path.join(process.cwd(), 'ai_keys_db.json');
+
+export interface AIKeysStore {
+  activeProvider: string;
+  defaultModel: string;
+  autoFailover: boolean;
+  keys: Record<string, string>;
+  customEndpoints?: Record<string, string>;
+  lastUpdated?: number;
+}
+
+export function loadAiKeysStore(): AIKeysStore {
+  try {
+    if (fs.existsSync(KEYS_FILE)) {
+      const data = JSON.parse(fs.readFileSync(KEYS_FILE, 'utf-8'));
+      if (!data.keys) data.keys = {};
+      if (!data.keys.gemini && process.env.GEMINI_API_KEY) {
+        data.keys.gemini = process.env.GEMINI_API_KEY;
+      }
+      return data;
+    }
+  } catch (e) {
+    console.error('Failed to read ai_keys_db.json:', e);
+  }
+  return {
+    activeProvider: 'gemini',
+    defaultModel: 'gemini-3.5-flash',
+    autoFailover: true,
+    keys: {
+      gemini: process.env.GEMINI_API_KEY || ''
+    },
+    customEndpoints: {}
+  };
+}
+
+export function saveAiKeysStore(store: AIKeysStore): void {
+  try {
+    fs.writeFileSync(KEYS_FILE, JSON.stringify(store, null, 2));
+    if (store.keys.gemini) {
+      try {
+        ai = new GoogleGenAI({
+          apiKey: store.keys.gemini,
+          httpOptions: { headers: { 'User-Agent': 'aistudio-build' } }
+        });
+      } catch (err) {}
+    }
+  } catch (e) {
+    console.error('Failed to save ai_keys_db.json:', e);
+  }
+}
+
+function maskKeyString(key: string): string {
+  if (!key) return '';
+  if (key.length <= 8) return '••••••••';
+  return key.slice(0, 4) + '••••••••' + key.slice(-4);
+}
+
+app.get('/api/keys', (req, res) => {
+  const store = loadAiKeysStore();
+  const maskedKeys: Record<string, { configured: boolean; masked: string }> = {};
+  
+  const providers = [
+    'gemini', 'openai', 'anthropic', 'deepseek', 'grok', 
+    'groq', 'openrouter', 'mistral', 'together', 'huggingface', 'perplexity'
+  ];
+
+  for (const p of providers) {
+    const raw = store.keys[p] || '';
+    maskedKeys[p] = {
+      configured: Boolean(raw && raw.trim().length > 0),
+      masked: maskKeyString(raw)
+    };
+  }
+
+  res.json({
+    success: true,
+    activeProvider: store.activeProvider || 'gemini',
+    defaultModel: store.defaultModel || 'gemini-3.5-flash',
+    autoFailover: store.autoFailover ?? true,
+    keys: maskedKeys,
+    customEndpoints: store.customEndpoints || {}
+  });
+});
+
+app.post('/api/keys', (req, res) => {
+  const { provider, key, activeProvider, defaultModel, autoFailover, customEndpoints, clearKey } = req.body;
+  const store = loadAiKeysStore();
+
+  if (activeProvider) store.activeProvider = activeProvider;
+  if (defaultModel) store.defaultModel = defaultModel;
+  if (typeof autoFailover === 'boolean') store.autoFailover = autoFailover;
+  if (customEndpoints && typeof customEndpoints === 'object') {
+    store.customEndpoints = { ...store.customEndpoints, ...customEndpoints };
+  }
+
+  if (provider) {
+    if (clearKey) {
+      delete store.keys[provider];
+    } else if (key && typeof key === 'string' && !key.includes('••••')) {
+      store.keys[provider] = key.trim();
+    }
+  }
+
+  store.lastUpdated = Date.now();
+  saveAiKeysStore(store);
+
+  const maskedKeys: Record<string, { configured: boolean; masked: string }> = {};
+  const providers = [
+    'gemini', 'openai', 'anthropic', 'deepseek', 'grok', 
+    'groq', 'openrouter', 'mistral', 'together', 'huggingface', 'perplexity'
+  ];
+
+  for (const p of providers) {
+    const raw = store.keys[p] || '';
+    maskedKeys[p] = {
+      configured: Boolean(raw && raw.trim().length > 0),
+      masked: maskKeyString(raw)
+    };
+  }
+
+  res.json({
+    success: true,
+    message: provider ? `API key for ${provider.toUpperCase()} saved!` : 'AI Settings updated!',
+    activeProvider: store.activeProvider,
+    defaultModel: store.defaultModel,
+    autoFailover: store.autoFailover,
+    keys: maskedKeys
+  });
+});
+
+app.post('/api/keys/test', async (req, res) => {
+  const { provider, key } = req.body;
+  const store = loadAiKeysStore();
+  
+  let apiKey = key;
+  if (!apiKey || apiKey.includes('••••')) {
+    apiKey = store.keys[provider];
+  }
+
+  if (!apiKey) {
+    return res.status(400).json({ success: false, error: `No API key found for ${provider.toUpperCase()}. Please enter a key first.` });
+  }
+
+  try {
+    if (provider === 'gemini') {
+      const testAi = new GoogleGenAI({ apiKey });
+      const testRes = await testAi.models.generateContent({
+        model: 'gemini-2.5-flash',
+        contents: 'Ping'
+      });
+      if (testRes) {
+        return res.json({ success: true, message: 'Gemini API Key validated successfully!' });
+      }
+    } else if (provider === 'openai') {
+      const response = await fetch('https://api.openai.com/v1/models', {
+        headers: { Authorization: `Bearer ${apiKey}` }
+      });
+      if (response.ok) {
+        return res.json({ success: true, message: 'OpenAI API Key verified successfully!' });
+      } else {
+        const errData: any = await response.json().catch(() => ({}));
+        return res.status(400).json({ success: false, error: errData.error?.message || 'Invalid OpenAI Key' });
+      }
+    } else if (provider === 'groq') {
+      const response = await fetch('https://api.groq.com/openai/v1/models', {
+        headers: { Authorization: `Bearer ${apiKey}` }
+      });
+      if (response.ok) {
+        return res.json({ success: true, message: 'Groq API Key verified successfully!' });
+      } else {
+        return res.status(400).json({ success: false, error: 'Groq API Key validation failed' });
+      }
+    } else if (provider === 'openrouter') {
+      const response = await fetch('https://openrouter.ai/api/v1/auth/key', {
+        headers: { Authorization: `Bearer ${apiKey}` }
+      });
+      if (response.ok) {
+        return res.json({ success: true, message: 'OpenRouter API Key verified successfully!' });
+      } else {
+        return res.status(400).json({ success: false, error: 'OpenRouter API Key validation failed' });
+      }
+    } else if (provider === 'deepseek') {
+      const response = await fetch('https://api.deepseek.com/models', {
+        headers: { Authorization: `Bearer ${apiKey}` }
+      });
+      if (response.ok) {
+        return res.json({ success: true, message: 'DeepSeek API Key verified successfully!' });
+      } else {
+        return res.status(400).json({ success: false, error: 'DeepSeek API Key validation failed' });
+      }
+    } else {
+      if (apiKey.length >= 8) {
+        return res.json({ success: true, message: `${provider.toUpperCase()} API Key formatted correctly!` });
+      } else {
+        return res.status(400).json({ success: false, error: 'API key format appears too short.' });
+      }
+    }
+  } catch (err: any) {
+    return res.status(500).json({ success: false, error: err.message || 'Key verification failed' });
+  }
+});
+
 // REST Endpoints for Model Telemetry and Resilience
 app.get('/api/model-telemetry/stats', (req, res) => {
   const telemetry = loadTelemetry();
