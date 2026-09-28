@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Context menu for project items -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/ctx_open" android:title="Open Project" />
+    <item android:id="@+id/ctx_vibe" android:title="Adjust Vibe" />
+    <item android:id="@+id/ctx_export" android:title="Export" />
+    <item android:id="@+id/ctx_delete" android:title="Delete" />
+</menu>

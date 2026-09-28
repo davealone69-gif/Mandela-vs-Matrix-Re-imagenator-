@@ -1,0 +1,14 @@
+build:
+  maxIssues: 0
+
+complexity:
+  LongMethod:
+    threshold: 60
+  LongParameterList:
+    threshold: 8
+
+style:
+  MagicNumber:
+    active: false
+  WildcardImport:
+    active: true

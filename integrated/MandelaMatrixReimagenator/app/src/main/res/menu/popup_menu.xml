@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Popup menu for creation tools -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/popup_recreate" android:title="Full Recreate" />
+    <item android:id="@+id/popup_tool" android:title="Single Tool" />
+    <item android:id="@+id/popup_swarm" android:title="Swarm Mode" />
+    <item android:id="@+id/popup_vibe" android:title="Vibe Only" />
+</menu>

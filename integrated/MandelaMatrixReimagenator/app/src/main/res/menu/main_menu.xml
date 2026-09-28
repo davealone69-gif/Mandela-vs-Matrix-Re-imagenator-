@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Mandela vs Matrix Re-imagenator - Main Options Menu -->
+<!-- Easy to modify later -->
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_recreate"
+        android:icon="@android:drawable/ic_menu_edit"
+        android:title="Recreate App"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_swarm"
+        android:icon="@android:drawable/ic_menu_manage"
+        android:title="Swarm Builder"
+        app:showAsAction="ifRoom" />
+
+    <item
+        android:id="@+id/action_vibe"
+        android:title="Personal Vibe Adjust" />
+
+    <item
+        android:id="@+id/action_tools"
+        android:title="Modular Tools" />
+
+    <item
+        android:id="@+id/action_about"
+        android:title="About / Credits" />
+</menu>

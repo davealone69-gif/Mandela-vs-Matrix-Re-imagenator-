@@ -1,0 +1,63 @@
+name: Build Real APK
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.7'
+
+      - name: Fix missing debug.keystore reference
+        run: |
+          # Remove custom signingConfig that points to non-existent file so default debug key works
+          sed -i '/signingConfigs {/,/}/d' app/build.gradle.kts || true
+          sed -i '/create("debugConfig")/,/}/d' app/build.gradle.kts || true
+
+      - name: Build Debug APK
+        run: gradle assembleDebug --stacktrace --no-daemon
+
+      - name: Upload APK as GitHub Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 14
+
+      - name: Upload APK to temporary public link (catbox)
+        id: upload
+        run: |
+          APK=$(find app/build/outputs/apk -name "*.apk" | head -n 1)
+          if [ -z "$APK" ]; then
+            echo "No APK found"
+            exit 1
+          fi
+          echo "Found: $APK"
+          ls -lh "$APK"
+          URL=$(curl -s -F "reqtype=fileupload" -F "time=72h" -F "fileToUpload=@$APK" https://litterbox.catbox.moe/resources/internals/api.php)
+          echo "TEMPORARY DOWNLOAD LINK: $URL"
+          echo "url=$URL" >> $GITHUB_OUTPUT
+
+      - name: Summary
+        run: |
+          echo "### APK Ready" >> $GITHUB_STEP_SUMMARY
+          echo "Download from Artifacts tab or:" >> $GITHUB_STEP_SUMMARY
+          echo "${{ steps.upload.outputs.url }}" >> $GITHUB_STEP_SUMMARY

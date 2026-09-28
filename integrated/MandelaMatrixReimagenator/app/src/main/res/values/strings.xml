@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Mandela vs Matrix Re-imagenator</string>
+    <string name="action_recreate">Recreate App</string>
+    <string name="action_swarm">Swarm Builder</string>
+    <string name="action_vibe">Personal Vibe Adjust</string>
+    <string name="action_tools">Modular Tools</string>
+    <string name="action_about">About / Credits</string>
+    <string name="ctx_open">Open Project</string>
+    <string name="ctx_vibe">Adjust Vibe</string>
+    <string name="ctx_export">Export</string>
+    <string name="ctx_delete">Delete</string>
+    <string name="about_credit">Built by REDRUM Studios</string>
+    <string name="version">Version 1.0.0</string>
+</resources>
