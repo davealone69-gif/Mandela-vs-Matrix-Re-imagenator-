@@ -1,0 +1,73 @@
+name: Consolidate Mandela Matrix family
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - ".github/workflows/consolidate-mandela.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout master repo
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Fetch and consolidate related repos
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p integrated
+
+          repos=(
+            "MandelaMatrixOS"
+            "Mandela-Matrix"
+            "MandelaMatrixReimagenator"
+            "Mandela-Native-Android"
+          )
+
+          for repo in "${repos[@]}"; do
+            dest="integrated/${repo}"
+            rm -rf "${dest}"
+            mkdir -p "${dest}"
+            git clone --depth 1 "https://github.com/davealone69-gif/${repo}.git" "/tmp/${repo}"
+            rsync -a --exclude='.git/' --exclude='node_modules/' --exclude='build/' --exclude='.gradle/' --exclude='dist/' "/tmp/${repo}/" "${dest}/"
+            rm -rf "/tmp/${repo}"
+          done
+
+      - name: Record consolidation manifest
+        shell: bash
+        run: |
+          cat > integrated/MANIFEST.md <<'EOF'
+          # Mandela Matrix Consolidation
+
+          This workspace consolidates the related Mandela/Matrix repositories without deleting or rewriting their original repositories.
+
+          Imported sources:
+          - MandelaMatrixOS
+          - Mandela-Matrix
+          - MandelaMatrixReimagenator
+          - Mandela-Native-Android
+
+          The root repository remains the primary integration target. Imported copies are source material for merging the strongest working Android, Compose, native, AI, UI, and build components into one finished application.
+          EOF
+
+      - name: Commit consolidated source
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add integrated
+          if git diff --cached --quiet; then
+            echo "No consolidation changes."
+            exit 0
+          fi
+          git commit -m "chore: consolidate Mandela Matrix family [skip ci]"
+          git push origin main
