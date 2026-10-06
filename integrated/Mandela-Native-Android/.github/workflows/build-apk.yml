@@ -42,22 +42,7 @@ jobs:
           path: app/build/outputs/apk/debug/*.apk
           retention-days: 14
 
-      - name: Upload APK to temporary public link (catbox)
-        id: upload
-        run: |
-          APK=$(find app/build/outputs/apk -name "*.apk" | head -n 1)
-          if [ -z "$APK" ]; then
-            echo "No APK found"
-            exit 1
-          fi
-          echo "Found: $APK"
-          ls -lh "$APK"
-          URL=$(curl -s -F "reqtype=fileupload" -F "time=72h" -F "fileToUpload=@$APK" https://litterbox.catbox.moe/resources/internals/api.php)
-          echo "TEMPORARY DOWNLOAD LINK: $URL"
-          echo "url=$URL" >> $GITHUB_OUTPUT
-
       - name: Summary
         run: |
           echo "### APK Ready" >> $GITHUB_STEP_SUMMARY
-          echo "Download from Artifacts tab or:" >> $GITHUB_STEP_SUMMARY
-          echo "${{ steps.upload.outputs.url }}" >> $GITHUB_STEP_SUMMARY
+          echo "Download from the GitHub Actions Artifacts tab." >> $GITHUB_STEP_SUMMARY
