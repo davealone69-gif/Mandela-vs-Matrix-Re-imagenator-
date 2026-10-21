@@ -97,3 +97,36 @@ The new workflows are still running at the time of this audit update. **No green
 3. Perform feature-level transfer with source provenance into the target app, prioritizing the native Compose/AI/Swarm Builder implementation and preserving standalone Swarm Builder.
 4. Run unit tests, lint, package/manifest checks, and validate APK artifact provenance.
 5. Physical-device verification is still required before declaring the consolidated app verified or deleting any source repository.
+
+
+## Fake/demo implementation audit
+
+A targeted code search found several features that currently simulate work or expose hard-coded demo values. These are **not accepted as working functionality** for the consolidated app.
+
+### Target React/Node application
+
+- `server.ts:loadCredits()` resets low/missing credit balances to 1,000 and disables auto-switching to avoid failures. This makes credits fictitious rather than a real quota/accounting source.
+- `server.ts` initializes model health, request counts, latency, quota pressure, and rotation events with hard-coded values and timestamps. The dashboard can therefore display invented health/usage as if observed.
+- The general AI fallback path returns `generateMockResponse(...)` when the model is unavailable or quota is exceeded. This is mock AI, not a provider response.
+- `NavigatorHome.tsx` initializes scores such as EVAL_SCORE 96, STABILITY 99.98, SECURITY_RATING 100, and MATRIX_CORE_HEALTH 98.7. These are not measured runtime values.
+- Its “State Map” randomly picks a route; “Logic Routes” prints a hard-coded list; “Deterministic Flow” reports 100% success without checking actual execution; and the API Test Bench returns a locally constructed `200 OK` health response and toast rather than calling a server.
+- Several dashboard panels use timed delays and scripted progress logs for healing, compilation, image/AI evaluation, publishing, and test-suite operations. Each must be classified as a real operation, clearly labelled demo-only, or disabled until implemented. Demo mode must not claim real completion.
+
+### Native Compose snapshot inside the target
+
+- `android/app/src/main/java/com/drivelog/ConsolidatedApp.kt` defines a Compose UI with hard-coded records/nodes/accuracy/throughput, sample knowledge results and Gemini conversation, an example SHA-256 signing fingerprint, and an initial log claiming the API is active on `0.0.0.0:3000`.
+- Its repository method is named `simulateNetworkLatency`; scan/processing actions increment seeded counters after delays instead of querying a data source.
+- The actual Android entry point on main is `MainActivity extends BridgeActivity`, so the Compose implementation is not wired into the running Capacitor activity. Keeping it in source does not make those screens part of the app.
+
+### Source candidate
+
+- `MandelaMatrixOS` contains a clearly labelled simulated APK auditor result (“Classes verified (simulated)”), but also seeds default dashboard metrics and a sample chat. Any retained sample content must be explicitly marked as sample data and must never be shown as real health, provider output, signing identity, or usage telemetry.
+
+### Required treatment
+
+- No fake server health, fake successful builds, mock AI fallback presented as a real answer, invented signing fingerprint, or hard-coded operational metrics.
+- Use real provider/backend calls with explicit `UNCONFIGURED`, `OFFLINE`, `FAILED`, `SIMULATED`, or `UNVERIFIED` states as appropriate.
+- If a panel is only a visual/demo tool and not core to the app, label it as a demo or remove it rather than silently faking functionality.
+- Each feature must have a source path, implementation test, failure-path test, and provenance note before it is considered transferred.
+
+**Fake cleanup status:** findings recorded; implementation cleanup has not yet been applied. The first priority remains obtaining a verified build pipeline so each change can be tested rather than merely committed.
