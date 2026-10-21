@@ -48,3 +48,9 @@ This deliverables package is structured to provide an immediate, plug-and-play d
 
 ---
 © [Current Year] [Company Name]. All rights reserved. "Mandela vs Mandela vs Matrix Re-imaginator" is a trademark of [Company Name] or its affiliates.
+
+
+## Android APK download
+
+- [Open GitHub Actions APK builds and download artifacts](https://github.com/davealone69-gif/Mandela-vs-Matrix-Re-imagenator-/actions/workflows/build-apk.yml). Open the latest successful run and download its APK artifact.
+- [Open GitHub Releases](https://github.com/davealone69-gif/Mandela-vs-Matrix-Re-imagenator-/releases) for versioned APKs.
