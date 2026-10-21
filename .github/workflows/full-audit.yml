@@ -25,7 +25,7 @@ jobs:
         shell: bash
         run: |
           set -o pipefail
-          chmod +x gradlew
+          chmod +x gradlew android/gradlew
           ./gradlew lint test assembleDebug --continue --stacktrace --console=plain
 
       - name: Node audit and test
