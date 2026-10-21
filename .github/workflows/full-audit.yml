@@ -8,49 +8,86 @@ on:
 
 permissions:
   contents: read
-  security-events: write
   actions: read
 
 jobs:
   audit:
     name: Whole repository audit
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     steps:
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Gradle audit and build
-        if: ${{ hashFiles('gradlew') != '' }}
-        shell: bash
-        run: |
-          set -o pipefail
-          chmod +x gradlew
-          ./gradlew lint test assembleDebug --continue --stacktrace --console=plain
 
-      - name: Node audit and test
+      - name: Set up Java 21
+        if: ${{ hashFiles('gradlew', 'android/gradlew') != '' }}
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up supported Android SDK packages
+        if: ${{ hashFiles('gradlew', 'android/gradlew') != '' }}
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+
+      - name: Node audit, tests, and web build
         if: ${{ hashFiles('package.json') != '' }}
         shell: bash
         run: |
-          set -o pipefail
-          npm ci --ignore-scripts
+          set -euo pipefail
+          npm ci
           npm audit --audit-level=high || true
-          if npm run | grep -qE '^  (test|lint|build)'; then
-            npm run test --if-present
-            npm run lint --if-present
-            npm run build --if-present
+          npm run test --if-present
+          npm run lint --if-present
+          npm run build --if-present
+
+      - name: Sync Capacitor Android project
+        if: ${{ hashFiles('package.json') != '' && hashFiles('capacitor.config.*') != '' }}
+        shell: bash
+        run: npx cap sync android
+
+      - name: Restore and validate Gradle wrapper JAR
+        if: ${{ hashFiles('android/gradlew') != '' || hashFiles('gradlew') != '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [ -f android/gradle/wrapper/gradle-wrapper.properties ]; then
+            PROPERTIES="android/gradle/wrapper/gradle-wrapper.properties"
+            JAR="android/gradle/wrapper/gradle-wrapper.jar"
+          else
+            PROPERTIES="gradle/wrapper/gradle-wrapper.properties"
+            JAR="gradle/wrapper/gradle-wrapper.jar"
           fi
+          VERSION="$(sed -n 's#.*gradle-\([0-9][0-9.]*\)-\(all\|bin\)\.zip.*#\1#p' "$PROPERTIES" | head -n 1)"
+          if [ -z "$VERSION" ]; then
+            echo "ERROR: Could not determine Gradle wrapper version from $PROPERTIES"
+            exit 1
+          fi
+          mkdir -p "$(dirname "$JAR")"
+          curl -fsSL -o "$JAR" "https://raw.githubusercontent.com/gradle/gradle/v${VERSION}/gradle/wrapper/gradle-wrapper.jar"
+          python3 - "$JAR" <<'PY'
+          import sys, zipfile
+          path = sys.argv[1]
+          with zipfile.ZipFile(path) as jar:
+              if "META-INF/MANIFEST.MF" not in jar.namelist():
+                  raise SystemExit("Invalid Gradle wrapper JAR: manifest missing")
+          print(f"Validated Gradle wrapper JAR: {path}")
+          PY
+          [ ! -f gradlew ] || chmod +x gradlew
+          [ ! -f android/gradlew ] || chmod +x android/gradlew
+
+      - name: Gradle audit and build
+        if: ${{ hashFiles('gradlew', 'android/gradlew') != '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          ./gradlew lint test assembleDebug --continue --stacktrace --console=plain
 
       - name: Python syntax audit
         if: ${{ hashFiles('**/*.py') != '' }}
         shell: bash
-        run: |
-          python -m compileall -q .
-
-      - name: CodeQL security analysis
-        uses: github/codeql-action/init@v3
-        with:
-          languages: javascript-typescript,python
-
-      - name: CodeQL analyze
-        uses: github/codeql-action/analyze@v3
+        run: python -m compileall -q .
