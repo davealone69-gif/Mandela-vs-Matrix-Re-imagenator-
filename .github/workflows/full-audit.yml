@@ -20,6 +20,34 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+      - name: Set up Java 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: Set up supported Android SDK packages
+        uses: android-actions/setup-android@v3
+        with:
+          packages: 'platform-tools platforms;android-36 build-tools;36.0.0'
+
+      - name: Restore and validate Gradle wrapper JAR
+        if: ${{ hashFiles('gradlew') != '' }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p android/gradle/wrapper
+          curl -fsSL -o android/gradle/wrapper/gradle-wrapper.jar \
+            https://raw.githubusercontent.com/gradle/gradle/v8.14.3/gradle/wrapper/gradle-wrapper.jar
+          python3 - <<'PY'
+          import zipfile
+          path = "android/gradle/wrapper/gradle-wrapper.jar"
+          with zipfile.ZipFile(path) as jar:
+              if "META-INF/MANIFEST.MF" not in jar.namelist():
+                  raise SystemExit("Invalid Gradle wrapper JAR: manifest missing")
+          print("Gradle wrapper JAR is valid")
+          PY
+
       - name: Gradle audit and build
         if: ${{ hashFiles('gradlew') != '' }}
         shell: bash
