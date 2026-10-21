@@ -130,3 +130,34 @@ A targeted code search found several features that currently simulate work or ex
 - Each feature must have a source path, implementation test, failure-path test, and provenance note before it is considered transferred.
 
 **Fake cleanup status:** findings recorded; implementation cleanup has not yet been applied. The first priority remains obtaining a verified build pipeline so each change can be tested rather than merely committed.
+
+
+## CI repair progress update (2026-10-21)
+
+### Target repo
+
+- A Debug APK build passed at commit `7e780c51` with a downloadable Actions artifact (`app-debug-apk`, 6,410,115 bytes; run [39535967304](https://github.com/davealone69-gif/Mandela-vs-Matrix-Re-imagenator-/actions/runs/39535967304)).
+- The expanded full audit then reached Android resource processing and failed on multiple launcher PNGs (`AAPT: file failed to compile`). The target repair branch now replaces density-specific raster launcher icons with XML/vector resources and updates adaptive-icon foreground references. Four latest workflow runs for commit `731b5149` were queued when this update was written; the post-icon-cleanup result is still pending.
+- The full-audit workflow now runs Node install/tests/lint/build before Capacitor sync and Gradle checks, and restores the wrapper JAR matching the declared Gradle distribution. This addresses the earlier false-negative audit caused by running Gradle before Capacitor generated its Android project modules.
+- The draft PR remains open; it has not been merged. A green debug build exists, but a fully green post-cleanup audit is not yet established.
+
+### `MandelaMatrixReimagenator/fix/android-sdk-setup-packages`
+
+- Fixed the missing AppCompat dependency used by the XML menu and alert dialog, and corrected the Compose `Surface` named argument.
+- Removed Qodana and CodeQL from its full-audit workflow, consistent with the repo-wide CI preference.
+- Updated CI to use Java 21 and supported Android SDK packages.
+- Both the full audit and Debug APK workflow passed at commit `3d583297`: [Full audit](https://github.com/davealone69-gif/MandelaMatrixReimagenator/actions/runs/39536228055), [Debug APK build](https://github.com/davealone69-gif/MandelaMatrixReimagenator/actions/runs/39536227449). This is CI-only verification; no phone installation/runtime check has been done. The source app still has simulated core functionality, so a green build does not make its features safe to transfer unchanged.
+
+### `Mandela-Native-Android/fix/android-sdk-setup-packages`
+
+- After fixing the legacy SDK package, the next real build failure was a Gradle version mismatch: Android Gradle Plugin 8.7.3 requires Gradle 8.9 or newer, while the workflow provisioned 8.7.
+- Updated the debug-build and audit workflows to use Gradle 8.9 and to build on pull requests/fix branches. The old second build workflow was also corrected to avoid invoking a missing `gradlew` script and to build a debug artifact honestly.
+- The new runs were queued at this update. This repository still has a duplicate `com/example` Workshop Manual app source tree beside the manifest-selected `com/mandelamatrix/reimaginator` app. The `copilot/bash` branch removes that unrelated tree but is 8 commits behind main; do not merge it wholesale. Inspect/port only the relevant deletions after the new build result.
+
+## Current fix queue
+
+- [Target PR #8](https://github.com/davealone69-gif/Mandela-vs-Matrix-Re-imagenator-/pull/8): debug APK build passed at an earlier workflow revision; full audit and post-icon-cleanup build pending.
+- [MandelaMatrixReimagenator PR #1](https://github.com/davealone69-gif/MandelaMatrixReimagenator/pull/1): build and audit passed at the current fix branch SHA, but fake core behavior remains unimplemented and must not be presented as real.
+- [Mandela-Native-Android PR #1](https://github.com/davealone69-gif/Mandela-Native-Android/pull/1): Gradle 8.9 correction pushed; latest runs pending.
+
+No PR has been merged and no source repository has been deleted. The next action is to collect the latest CI results, continue fixing only evidenced failures, and then begin feature-by-feature integration using the working `MandelaMatrixOS` branch as the main native Compose/AI/Swarm source.
