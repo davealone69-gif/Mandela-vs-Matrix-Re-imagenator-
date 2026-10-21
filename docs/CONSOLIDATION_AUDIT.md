@@ -53,3 +53,47 @@
 - [ ] Only then review the exact source repositories for archival/deletion.
 
 **Current outcome:** audit findings recorded; feature transfer, green build, physical-device verification, and repository deletion are still pending.
+
+
+## Expanded branch audit (2026-10-21)
+
+### Target repository branch inventory
+
+All 18 branches exposed by GitHub were listed and the main differences were checked for the relevant fix/work branches. Branches were not blindly merged.
+
+- `android-native-clean`: diverged from current main (2 commits ahead, 11 behind); contains a separate `android-native/` Compose app skeleton and a second, older app tree. Keep as a source lead only; do not merge wholesale.
+- `copilot/faults`, `copilot/build-apk`, `copilot/deep-dive-analysis-build-failures`, `copilot/fix-android-dual-build-job`, `copilot/clean-up-built-apk-yml`, `copilot/android-yml-workflow-update`, `copilot/generate-keystore-and-github-secret`, and other old Copilot branches are stale/diverged from main. Their workflow changes are not automatically safe to merge.
+- `copilot/your-pat-rotate-if-exposed` changes only `.env.example`; review its secret-handling change before any transfer.
+- `chore/remove-qodana-codeql` is four commits ahead of main and changes the audit workflow plus nested snapshot workflows. Its current workflow history has failed audit runs, so reuse only reviewed changes, not the branch wholesale.
+- `copilot/apo-need-publishing`, `copilot/fix-image-processing-bug`, `copilot/stop`, `copilot/update-user-profile-page`, and `copilot/update-workflow-to-java-21` are behind main with no unique commits ahead according to GitHub compare. Do not cherry-pick them just because they exist.
+
+### Existing source fix branches
+
+- `MandelaMatrixOS/fix/termux-builder-startup-truth`: 3 commits ahead of main, no main commits missing. Build & Release APK and Full Code Audit passed on 2026-10-15. Reuse its real Termux delivery/failure reporting and unverified-artifact status.
+- `MandelaMatrixOS/docs/server-requirements-health`: 1 commit ahead; adds `SERVER_REQUIREMENTS.md`. Full audit and APK build workflows passed on 2026-10-14.
+- `MandelaMatrixReimagenator/fix/android-sdk-setup-packages`: 5 commits ahead; the Android SDK step is fixed, but APK build then fails at resource linking in `app/src/main/res/menu/main_menu.xml` because `showAsAction` is not defined by the current app dependencies. Its full audit also fails on Qodana token requirements. Not green.
+- `Mandela-Native-Android/fix/android-sdk-setup-packages`: 6 commits ahead; its SDK package list fix was not on main when the main branch build failed. Inspect wrapper availability and the duplicate package/source trees before deciding whether this project is a transfer source.
+- `Mandela-Matrix/fix/android-sdk-package-list`: 2 commits ahead; the main CI failure is the legacy SDK package `tools`. The branch explicitly requests supported packages, but it is a starter app with a placeholder library, not a candidate to replace the full app.
+- The target main-branch Build APK failure on 2026-10-06 is confirmed in logs: `android-actions/setup-android@v3` attempted `sdkmanager tools` and failed because that package no longer exists. The same failure appears in the native starter repositories.
+- The target Full Repository Audit failure is a separate issue: root `gradlew` runs `android/gradlew` without executable permission, then the wrapper JAR is invalid/corrupt. Fixing only the SDK package would not have produced a green build.
+
+### Current repair branch
+
+A draft PR is open: [#8 Fix Android SDK setup and Gradle wrapper execution](https://github.com/davealone69-gif/Mandela-vs-Matrix-Re-imagenator-/pull/8), branch `fix/android-build-pipeline-audit-2026-10-21`.
+
+Changes made on that branch:
+1. Explicitly install supported Android SDK packages `platform-tools`, `platforms;android-36`, and `build-tools;36.0.0` instead of the removed `tools` package.
+2. Mark the Android wrapper executable before APK assembly.
+3. Provision Java 21 and supported Android SDK packages in the full audit.
+4. Download and validate the official Gradle 8.14.3 wrapper JAR during audit because the committed one is corrupt.
+5. Make APK builds run on fix branches and pull requests so failures can be observed before merge.
+
+The new workflows are still running at the time of this audit update. **No green result is claimed yet.** The first repair run exposed the corrupt wrapper JAR, which is now addressed in the audit workflow; the next CI result must confirm whether further failures remain.
+
+## Remaining next steps
+
+1. Wait for PR #8 APK and full-audit workflows to finish; inspect each failure step/log and patch until both pass.
+2. Inspect/repair useful source branches only after their real build errors are understood; record changes on dedicated branches and avoid merging stale branches wholesale.
+3. Perform feature-level transfer with source provenance into the target app, prioritizing the native Compose/AI/Swarm Builder implementation and preserving standalone Swarm Builder.
+4. Run unit tests, lint, package/manifest checks, and validate APK artifact provenance.
+5. Physical-device verification is still required before declaring the consolidated app verified or deleting any source repository.
